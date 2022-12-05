@@ -1185,7 +1185,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
 
     const event = "(FITTING)";
     const cust = data[2];
-    const phone = data[3];
+    const phone = data[3].substr(1);
 
     const pickupDate = data[4];
     const eventDate = data[5];
@@ -1358,7 +1358,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
     }
 
     if(TotalStr == "=RM0<br><br>"){
-      TotalStr = "<br><br>";
+      TotalStr = "<br>";
     }
 
     let saleAdvisor = saleAdvisor1.value;
@@ -1370,24 +1370,16 @@ const popUpTemplateDuplicate_For_Fitting = `\`
       saleAdvisor += " " + saleAdvisor3.value;
     }
 
-    if(eventDiv.innerText.toLowerCase().trim() == "(fitting)"){
+      if(eventDiv.innerText.toLowerCase().trim() == "(fitting)"){
       finalMessage.innerHTML = \\\`
       <p>\\\${orderNo} [\\\${saleAdvisor}]<br>(FITTING) \\\${custDiv.innerText} \\\${phoneDiv.innerText}
       <br>
       \\\${picupM1} \\\${pickupMethod.value.replace("Pickup", "")}<br><br>
-      \\\${itemsData}\\\${TotalStr}
+      \\\${itemsData}
       </p>
-    \\\`;
-    }else{
-      finalMessage.innerHTML = \\\`
-      <p>\\\${orderNo} [\\\${saleAdvisor}]<br>\\\${eventDiv.innerText} \\\${custDiv.innerText} \\\${phoneDiv.innerText}
-      <br>
-      \\\${picupM1} \\\${pickupMethod.value}<br>\\\${eventDateDiv.innerText} Event<br>\\\${returnDateDiv.innerText} \\\${returnMethod.value}<br><br>
-      \\\${itemsData}\\\${TotalStr}
-      \\\${creditM}
-      \\\${pickupM2}</p>
-    \\\`;
-    }
+      \\\`;
+      }
+
 
     dataTable.style.display = "none";
     finalDiv.style.display = "block";
@@ -1828,7 +1820,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
         const logs = [
           eventDiv.innerText,
           custDiv.innerText,
-          phoneDiv.innerText,
+          "'" + phoneDiv.innerText,
           pickupDateDiv.innerText,
           pickupMethod.value,
           eventDateDiv.innerText,

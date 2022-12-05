@@ -45,10 +45,10 @@ const popUpTemplateBook = `\`
 
     .time{
       margin-top: 20px;
-      font-size: 14px;
+      font-size: 11px;
       text-align: center;
       font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
-      font-size: 16px;
+      font-size: 11px;
       font-weight: 600;
     }
 
@@ -735,7 +735,6 @@ const popUpTemplateBook = `\`
           ><select style="font-weight: bold;
               text-align: right;font-size: 11pt;" id="saleAdvisor1"></select></td>
         </tr>
-
         <tr style="height: 21px">
           <td
             style="
@@ -793,7 +792,6 @@ const popUpTemplateBook = `\`
           ><select style="font-weight: bold;
               text-align: right;font-size: 11pt;" id="saleAdvisor2"></select></td>
         </tr>
-
         <tr style="height: 21px">
           <td
             style="
@@ -851,7 +849,6 @@ const popUpTemplateBook = `\`
           ><select style="font-weight: bold;
               text-align: right;font-size: 11pt;" id="saleAdvisor3"></select></td>
         </tr>
-
         <tr style="height: 21px">
           <td
             style="
@@ -1121,9 +1118,9 @@ const popUpTemplateBook = `\`
     const options = {
       pickupMethod: ["Pickup (Weekday 12PM-8PM Weekend PH 10AM-6PM)", "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)", "Early Pickup 10AM", "Lalamove (Weekday 12PM-8PM Weekend PH 10AM-6PM)"],
       returnMethod: ["Return", "Return post back by any courier except poslaju skynet", "Return by Midnight"],
-      saleAdvisor1:["Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Lance", "Emily"],
-      saleAdvisor2:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Lance", "Emily"],
-      saleAdvisor3:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Lance", "Emily"],
+      saleAdvisor1:["Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Emily"],
+      saleAdvisor2:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Emily"],
+      saleAdvisor3:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Emily"],
       totalDeposit: ["RM300", "RM400", "RM600", "RM800", "RM900", "RM1200"]
     }
 
@@ -1254,10 +1251,12 @@ const popUpTemplateBook = `\`
         }
       }
 
-      if(TotalStr == "=RM0<br><br>"){
-        TotalStr = "<br><br>";
-      }
-
+      	
+    if(TotalStr == "=RM0<br><br>"){
+        TotalStr = "<br>";
+    
+    }
+    
     let saleAdvisor = saleAdvisor1.value;
     if(saleAdvisor2.value){
       saleAdvisor += " " + saleAdvisor2.value;
@@ -1272,10 +1271,35 @@ const popUpTemplateBook = `\`
       <p>\\\${orderNo} [\\\${saleAdvisor}]<br>(FITTING) \\\${custDiv.innerText} \\\${phoneDiv.innerText}
       <br>
       \\\${picupM1} \\\${pickupMethod.value.replace("Pickup", "")}<br><br>
-      \\\${itemsData}\\\${TotalStr}
+      \\\${itemsData}
       </p>
-    \\\`;
-    }else{
+      \\\`;
+      }
+
+      else if(eventDiv.innerText.toLowerCase().trim() == "(lalamove)"){
+      pickupM2 = \\\`Deposit \\\${totalDeposit.value}\\\`;
+      finalMessage.innerHTML = \\\`
+      <p>\\\${orderNo} [\\\${saleAdvisor}]<br>(LALAMOVE) \\\${custDiv.innerText} \\\${phoneDiv.innerText}
+      <br>
+      \\\${picupM1} Lalamove<br>\\\${eventDate} Event<br>\\\${returnDate} \\\${returnMethod.value} (Weekday 12PM-8PM Weekend PH 10AM-6PM)<br><br>
+      \\\${itemsData}\\\${TotalStr}
+      \\\${creditM}
+      \\\${pickupM2}</p>
+      </p>
+      \\\`;
+      }
+
+      else if(eventDiv.innerText.toLowerCase().trim() == "(studio)"){
+      finalMessage.innerHTML = \\\`
+      <p>\\\${orderNo} [\\\${saleAdvisor}]<br>(STUDIO) \\\${custDiv.innerText} \\\${phoneDiv.innerText}
+      <br>
+      \\\${picupM1} STUDIO \\\<br><br>
+      \\\${itemsData}
+      </p>
+      \\\`;
+      }
+            
+      else{
       finalMessage.innerHTML = \\\`
       <p>\\\${orderNo} [\\\${saleAdvisor}]<br>\\\${eventDiv.innerText} \\\${custDiv.innerText} \\\${phoneDiv.innerText}
       <br>
@@ -1283,7 +1307,7 @@ const popUpTemplateBook = `\`
       \\\${itemsData}\\\${TotalStr}
       \\\${creditM}
       \\\${pickupM2}</p>
-    \\\`;
+      \\\`;
     }
 
       dataTable.style.display = "none";
@@ -1318,7 +1342,7 @@ const popUpTemplateBook = `\`
       const logs = [
         eventDiv.innerText,
         custDiv.innerText,
-        "x" + phoneDiv.innerText,
+        "'" + phoneDiv.innerText,
         pickupDate,
         pickupMethod.value,
         eventDate,
@@ -1345,5 +1369,3 @@ const popUpTemplateBook = `\`
   </script>
 \`
 `
-
-

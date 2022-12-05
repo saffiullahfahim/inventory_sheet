@@ -38,7 +38,6 @@ const addBook0 = (orderNo, pickupDate_, eventDate_, returnDate_, logs, finalData
     }
   })
 
-
   const { data, color, wrap } = finalAll;
 
   inventoryOrderRange_.setValues(data).setBackgrounds(color).setWraps(wrap);
