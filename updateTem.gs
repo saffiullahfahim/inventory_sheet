@@ -129,13 +129,14 @@ const popUpTemplateUpdate = `\`
     
     const startDate = "\${startDate}";
     const html = \\\`\\\\\\\`
-<style>
+  <style>
+
       table tr td:nth-child(2) {
-        width: 270px;
+        width: 280px;
       }
 
       table tr td:nth-child(1){
-        width: 161px;
+        width: 130px;
       }
     </style>
     <div id="dataTable">
@@ -861,7 +862,7 @@ const popUpTemplateUpdate = `\`
           ><select style="font-weight: bold;
               text-align: right;font-size: 11pt;" id="saleAdvisor1"></select></td>
         </tr>
-
+       
         <tr style="height: 21px">
           <td
             style="
@@ -928,7 +929,6 @@ const popUpTemplateUpdate = `\`
           ><select style="font-weight: bold;
               text-align: right;font-size: 11pt;" id="saleAdvisor2"></select></td>
         </tr>
-
         <tr style="height: 21px">
           <td
             style="
@@ -995,7 +995,6 @@ const popUpTemplateUpdate = `\`
           ><select style="font-weight: bold;
               text-align: right;font-size: 11pt;" id="saleAdvisor3"></select></td>
         </tr>
-
         <tr style="height: 21px">
           <td
             style="
@@ -1171,7 +1170,7 @@ const popUpTemplateUpdate = `\`
     <div class="buttonDiv">
       <button id="bookBtn" fun="checkAvailability" type="button">Check Availability</button>
       <button id="duplicateBtn" type="button">Duplicate for Fitting</button>
-      <button id="cancelBtn" type="button">Cancel</button>
+      <button id="cancelBtn" type="button">Cancel This Order</button>
     </div>
     </div>
 
@@ -1188,7 +1187,7 @@ const popUpTemplateUpdate = `\`
 
     const event = data[1];
     const cust = data[2];
-    const phone = data[3].substr(1);
+    const phone = data[3].substr(0);
 
     const pickupDate = data[4];
     const eventDate = data[6];
@@ -1365,9 +1364,9 @@ const popUpTemplateUpdate = `\`
     }
 
     if(TotalStr == "=RM0<br><br>"){
-      TotalStr = "<br><br>";
+      TotalStr = "<br>";
     }
-
+    
     let saleAdvisor = saleAdvisor1.value;
     if(saleAdvisor2.value){
       saleAdvisor += " " + saleAdvisor2.value;
@@ -1377,15 +1376,40 @@ const popUpTemplateUpdate = `\`
       saleAdvisor += " " + saleAdvisor3.value;
     }
 
-    if(eventDiv.innerText.toLowerCase().trim() == "(fitting)"){
+      if(eventDiv.innerText.toLowerCase().trim() == "(fitting)"){
       finalMessage.innerHTML = \\\`
       <p>\\\${orderNo} [\\\${saleAdvisor}]<br>(FITTING) \\\${custDiv.innerText} \\\${phoneDiv.innerText}
       <br>
       \\\${picupM1} \\\${pickupMethod.value.replace("Pickup", "")}<br><br>
-      \\\${itemsData}\\\${TotalStr}
+      \\\${itemsData}
       </p>
-    \\\`;
-    }else{
+      \\\`;
+      }
+
+      else if(eventDiv.innerText.toLowerCase().trim() == "(lalamove)"){
+      pickupM2 = \\\`Deposit \\\${totalDeposit.value}\\\`;
+      finalMessage.innerHTML = \\\`
+      <p>\\\${orderNo} [\\\${saleAdvisor}]<br>(LALAMOVE) \\\${custDiv.innerText} \\\${phoneDiv.innerText}
+      <br>
+      \\\${picupM1} Lalamove<br>\\\${eventDate} Event<br>\\\${returnDate} \\\${returnMethod.value} (Weekday 12PM-8PM Weekend PH 10AM-6PM)<br><br>
+      \\\${itemsData}\\\${TotalStr}
+      \\\${creditM}
+      \\\${pickupM2}</p>
+      </p>
+      \\\`;
+      }
+
+      else if(eventDiv.innerText.toLowerCase().trim() == "(studio)"){
+      finalMessage.innerHTML = \\\`
+      <p>\\\${orderNo} [\\\${saleAdvisor}]<br>(STUDIO) \\\${custDiv.innerText} \\\${phoneDiv.innerText}
+      <br>
+      \\\${picupM1} STUDIO \\\<br><br>
+      \\\${itemsData}
+      </p>
+      \\\`;
+      }
+
+      else{
       finalMessage.innerHTML = \\\`
       <p>\\\${orderNo} [\\\${saleAdvisor}]<br>\\\${eventDiv.innerText} \\\${custDiv.innerText} \\\${phoneDiv.innerText}
       <br>
@@ -1393,8 +1417,8 @@ const popUpTemplateUpdate = `\`
       \\\${itemsData}\\\${TotalStr}
       \\\${creditM}
       \\\${pickupM2}</p>
-    \\\`;
-    }
+      \\\`;
+      }
 
     dataTable.style.display = "none";
     finalDiv.style.display = "block";
@@ -1518,9 +1542,9 @@ const popUpTemplateUpdate = `\`
           "Return post back by any courier except poslaju skynet",
           "Return by Midnight",
         ],
-        saleAdvisor1:["Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Lance", "Emily"],
-        saleAdvisor2:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Lance", "Emily"],
-        saleAdvisor3:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Lance", "Emily"],
+        saleAdvisor1:["Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Emily"],
+        saleAdvisor2:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Emily"],
+        saleAdvisor3:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Emily"],
         totalDeposit: ["RM300", "RM400", "RM600", "RM800", "RM900", "RM1200"],
       };
   
@@ -1710,7 +1734,7 @@ const popUpTemplateUpdate = `\`
         const logs = [
           eventDiv.innerText,
           custDiv.innerText,
-          phoneDiv.innerText,
+          "'" + phoneDiv.innerText,
           pickupDateDiv.innerText,
           pickupMethod.value,
           eventDateDiv.innerText,
@@ -1720,7 +1744,7 @@ const popUpTemplateUpdate = `\`
           others.innerText,
           previouslyPaid.innerText,
           totalAmount.innerText,
-          saleAdvisor.value,
+                    saleAdvisor.value,
           totalDeposit.value,
         ];
   
@@ -1960,7 +1984,7 @@ const popUpTemplateUpdate = `\`
         const logs = [
           eventDiv.innerText,
           custDiv.innerText,
-          phoneDiv.innerText,
+         "'" + phoneDiv.innerText,
           pickupDateDiv.innerText,
           pickupMethod.value,
           eventDateDiv.innerText,
@@ -2073,7 +2097,7 @@ const popUpTemplateUpdate = `\`
           finalData_,
           eventDiv.innerText,
           custDiv.innerText,
-          phoneDiv.innerText,
+          "'" + phoneDiv.innerText,
           pickupDateDiv.innerText,
           eventDateDiv.innerText,
           returnDateDiv.innerText,
@@ -2092,5 +2116,3 @@ const popUpTemplateUpdate = `\`
   </script>
 \`
 `
-
-

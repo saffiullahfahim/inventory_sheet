@@ -262,7 +262,7 @@ const cancelBook = (orderNo, itemsNo, oldFinalData, oldPickupDate_, oldReturnDat
   
     let order = Number(orderNo.substr(1)) - 1003000 + 2;
     
-    logsSheet.getRange(order, 1, 1, 2).setValues([[new Date().toISOString(), "CANCELED"]])
+    logsSheet.getRange(order, 1, 1, 2).setValues([[new Date().toISOString(), "CANCELLED"]])
    
     return new Date() - time;
 }
