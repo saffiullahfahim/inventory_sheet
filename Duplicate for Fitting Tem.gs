@@ -58,6 +58,8 @@ const popUpTemplateDuplicate_For_Fitting = `\`
     #cancelBtn{
       border: 1px solid red;
       color: red;
+      float: left;
+      margin-left: 10px;
     }
 
     #cancelBtn:hover {
@@ -70,13 +72,13 @@ const popUpTemplateDuplicate_For_Fitting = `\`
     }
 
     .time{
-      margin-top: 20px;
+      margin-top: 10px;
       font-size: 14px;
-      text-align: left;
+      text-align: center;
       font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
       font-size: 16px;
       font-weight: 600;
-      margin-left: 20px;
+      margin-left: -150px;
     }
 
     select, .dataInput{
@@ -307,7 +309,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
             style="
               border-width: 1px;
               border-style: solid;
-              border-color: rgb(204, 204, 204) rgb(0, 0, 0);
+              border-color: rgb(0, 0, 0);
               border-image: initial;
               overflow: hidden;
               padding: 2px 3px;
@@ -318,7 +320,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
               text-align: center;
             "
           >
-            pickup date
+            Date
           </td>
           <td
             style="
@@ -340,7 +342,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
             style="
               border-width: 1px;
               border-style: solid;
-              border-color: rgb(204, 204, 204) rgb(0, 0, 0) rgb(204, 204, 204)
+              border-color: rgb(204, 204, 204) rgb(0, 0, 0) rgb(0, 0, 0)
                 rgb(204, 204, 204);
               border-image: initial;
               overflow: hidden;
@@ -352,105 +354,6 @@ const popUpTemplateDuplicate_For_Fitting = `\`
             "
           >
             <select id="pickupMethod"></select>
-          </td>
-        </tr>
-        <tr style="height: 21px">
-          <td
-            style="
-              border-width: 1px;
-              border-style: solid;
-              border-color: rgb(204, 204, 204) rgb(0, 0, 0);
-              border-image: initial;
-              overflow: hidden;
-              padding: 2px 3px;
-              vertical-align: bottom;
-              background-color: rgb(189, 189, 189);
-              font-size: 9pt;
-              font-weight: bold;
-              text-align: center;
-            "
-          >
-            event date
-          </td>
-          <td
-            style="
-              border-width: 1px;
-              border-style: solid;
-              border-color: rgb(204, 204, 204) rgb(204, 204, 204) rgb(0, 0, 0);
-              border-image: initial;
-              overflow: hidden;
-              padding: 2px 3px;
-              vertical-align: bottom;
-              background-color: rgb(243, 243, 243);
-            "
-            id="eventDateDiv"
-          >
-            \\\\\\\${eventDate}
-          </td>
-          <td
-            colspan="3"
-            style="
-              border-width: 1px;
-              border-style: solid;
-              border-color: rgb(204, 204, 204) rgb(0, 0, 0) rgb(204, 204, 204)
-                rgb(204, 204, 204);
-              border-image: initial;
-              overflow: hidden;
-              padding: 2px 3px;
-              vertical-align: bottom;
-              background-color: rgb(243, 243, 243);
-            "
-          ></td>
-        </tr>
-        <tr style="height: 21px">
-          <td
-            style="
-              border-width: 1px;
-              border-style: solid;
-              border-color: rgb(204, 204, 204) rgb(0, 0, 0) rgb(0, 0, 0);
-              border-image: initial;
-              overflow: hidden;
-              padding: 2px 3px;
-              vertical-align: bottom;
-              background-color: rgb(189, 189, 189);
-              font-size: 9pt;
-              font-weight: bold;
-              text-align: center;
-            "
-          >
-            return date
-          </td>
-          <td
-            style="
-              border: 1px solid rgb(204, 204, 204);
-              overflow: hidden;
-              padding: 2px 3px;
-              vertical-align: bottom;
-              background-color: rgb(243, 243, 243);
-              border-bottom-color: #000;
-            "
-            id="returnDateDiv"
-          >
-            \\\\\\\${returnDate}
-          </td>
-          <td
-            colspan="3"
-            style="
-              border-width: 1px;
-              border-style: solid;
-              border-color: rgb(204, 204, 204) rgb(0, 0, 0) rgb(204, 204, 204)
-                rgb(204, 204, 204);
-              border-image: initial;
-              overflow: hidden;
-              padding: 2px 3px;
-              vertical-align: bottom;
-              background-color: rgb(255, 255, 255);
-              font-size: 9pt;
-              border-bottom-color: #000;
-              outline: none;
-            "
-          >
-            <select id="returnMethod"></select>
           </td>
         </tr>
         <tr style="height: 21px">
@@ -685,7 +588,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
           ></td>
            <td
             style="
-              border: 1px solid rgb(204, 204, 204);
+              /* border: 1px solid rgb(204, 204, 204); */
               overflow: hidden;
               padding: 2px 3px;
               vertical-align: bottom;
@@ -756,8 +659,14 @@ const popUpTemplateDuplicate_For_Fitting = `\`
               padding: 2px 3px;
               vertical-align: bottom;
               background-color: #fff;
+              border-color: rgb(0, 0, 0) rgb(204, 204, 204);
             "
-          ></td>
+          >
+            <select style="font-weight: bold;" id="totalDropDown">
+              <option>Pay Now</option>
+              <option>Pay Later</option>
+            </select>
+          </td>
           <td
             style="
               border-width: 1px;
@@ -1088,7 +997,12 @@ const popUpTemplateDuplicate_For_Fitting = `\`
               vertical-align: bottom;
               background-color: #fff;
             "
-          ></td>
+          >
+            <select style="font-weight: bold;" id="totalDepositDropDown">
+              <option>Pay Later</option>
+              <option>Pay Now</option>
+            </select>
+          </td>
           <td
             style="
               border-width: 1px;
@@ -1188,8 +1102,8 @@ const popUpTemplateDuplicate_For_Fitting = `\`
     const phone = data[3].substr(1);
 
     const pickupDate = data[4];
-    const eventDate = data[5];
-    const returnDate = data[6];
+    // const eventDate = data[5];
+    // const returnDate = data[6];
 
     let index = 0;
     let subTotal = data[7];
@@ -1306,7 +1220,15 @@ const popUpTemplateDuplicate_For_Fitting = `\`
 
     let creditM = "";
     let picupM1 = pickupDateDiv.innerText;
-    let pickupM2 = \\\`Upon pickup to pay another refundable deposit \\\${totalDeposit.value} in cash<br><br>Please display this order summary/message upon collection\\\`;
+    let depositPlasText = "";
+    if(totalDropDown.value == "Pay Later") depositPlasText = " + Balance RM" + totalAmount.innerText;
+
+    let pickupM2 = \\\`Upon pickup to pay another refundable deposit \\\${totalDeposit.value} in cash\\\${depositPlasText}<br><br>Please display this order summary/message upon collection\\\`;
+
+    if(totalDepositDropDown.value == "Pay Now"){
+      pickupM2 = \\\`Refundable deposit \\\${totalDeposit.value} \\\${depositPlasText}\\\`;
+    }
+
     if(Number(totalAmount.innerText) == 0){
       TotalStr = "RM" + (Number(totalAmount.innerText) + Number(previouslyPaid.innerText)) + "(Previously paid RM" + previouslyPaid.innerText + ")";
     }
@@ -1314,7 +1236,11 @@ const popUpTemplateDuplicate_For_Fitting = `\`
       creditM = \\\`Credit balance RM\\\${-Number(totalAmount.innerText)} valid until \\\${returnDate}<br><br>\\\`;
       TotalStr = "RM" + (Number(totalAmount.innerText) + Number(previouslyPaid.innerText)) + "(Previously paid RM" + previouslyPaid.innerText + ")";
     } else{
-      TotalStr = "-(Previously paid RM" + previouslyPaid.innerText + ")=RM" + totalAmount.innerText;
+      if(totalDropDown.value == "Pay Later"){
+        TotalStr = "-(Previously paid RM" + previouslyPaid.innerText + ")=Balance RM" + totalAmount.innerText;
+      } else{
+        TotalStr = "-(Previously paid RM" + previouslyPaid.innerText + ")=RM" + totalAmount.innerText;
+      }
     }
 
     let nowTime = new Date().toLocaleDateString();
@@ -1327,7 +1253,11 @@ const popUpTemplateDuplicate_For_Fitting = `\`
 
     let PreviouslyPaid = Number(previouslyPaid.innerText);
     if(PreviouslyPaid == 0){
-      TotalStr = "RM" + totalAmount.innerText;
+      if(totalDropDown.value == "Pay Later"){
+        TotalStr = "Balance RM" + totalAmount.innerText;
+      } else{
+        TotalStr = "RM" + totalAmount.innerText;
+      }
     }
 
     let PostCost = Number(others.innerText);
@@ -1419,26 +1349,16 @@ const popUpTemplateDuplicate_For_Fitting = `\`
       const notesDiv = document.querySelectorAll("[note='note']");
       const pricesDiv = document.querySelectorAll("[price='price']");
       const subTotalDiv = document.querySelector("#subTotalDiv");
+      const totalDropDown = document.querySelector("#totalDropDown");
+      const totalDepositDropDown = document.querySelector("#totalDepositDropDown");
   
       const dataInputs = document.querySelectorAll(".dataInput");
       const allAvaliablity = document.querySelectorAll(".allAvaliablity");
 
       pickupDateDiv.style.cursor = "pointer";
-      eventDateDiv.style.cursor = "pointer";
-      returnDateDiv.style.cursor = "pointer";
   
       const editEnable = () => {
         if (pickupDateDiv.innerText != pickupDate) {
-          editEnableFun();
-          return;
-        }
-  
-        if (eventDateDiv.innerText != eventDate) {
-          editEnableFun();
-          return;
-        }
-  
-        if (returnDateDiv.innerText != returnDate) {
           editEnableFun();
           return;
         }
@@ -1496,11 +1416,6 @@ const popUpTemplateDuplicate_For_Fitting = `\`
           "Early Pickup 10AM",
           "Lalamove (Weekday 12PM-8PM Weekend PH 10AM-6PM)",
         ],
-        returnMethod: [
-          "Return",
-          "Return post back by any courier except poslaju skynet",
-          "Return by Midnight",
-        ],
         saleAdvisor1:["Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Lance", "Emily"],
         saleAdvisor2:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Lance", "Emily"],
         saleAdvisor3:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Lance", "Emily"],
@@ -1539,17 +1454,6 @@ const popUpTemplateDuplicate_For_Fitting = `\`
           if (date) {
             document.querySelector("#pickupDateDiv").innerText =
               getDate(date);
-            if(new Date(eventDateDiv.innerText).getTime() < new Date(pickupDateDiv.innerText).getTime()){
-              eventDateDiv.innerText = getDate(date)
-              eventDatePicker.setDate(new Date(getDate(date)))
-            }
-            if(new Date(returnDateDiv.innerText).getTime() < new Date(eventDateDiv.innerText).getTime()){
-              returnDateDiv.innerText = getDate(date);
-              returnDatePicker.setDate(new Date(getDate(date)))
-            }
-
-            eventDatePicker.setMin(new Date(getDate(date)));
-            returnDatePicker.setMin(new Date(getDate(date)));
             editEnable();
           }
         },
@@ -1557,42 +1461,6 @@ const popUpTemplateDuplicate_For_Fitting = `\`
         dateSelected: new Date(pickupDateDiv.innerText),
       });
   
-      let eventDatePicker = datepicker("#eventDateDiv", {
-        onSelect: (i, date) => {
-          if (date) {
-            document.querySelector("#eventDateDiv").innerText = getDate(date);
-            if(new Date(returnDateDiv.innerText).getTime() < new Date(eventDateDiv.innerText).getTime()){
-              returnDateDiv.innerText = getDate(date);
-              returnDatePicker.setDate(new Date(getDate(date)))
-            }
-
-            returnDatePicker.setMin(new Date(getDate(date)));
-            editEnable();
-          }
-        },
-        id: 2,
-        dateSelected: new Date(eventDateDiv.innerText),
-      });
-  
-      let returnDatePicker = datepicker("#returnDateDiv", {
-        onSelect: (i, date) => {
-          if (date) {
-            if(new Date(getDate(date)).getTime() < new Date(eventDateDiv.innerText).getTime()){
-              returnDateDiv.innerText = eventDateDiv.innerText;
-              returnDatePicker.setDate(new Date(eventDateDiv.innerText))
-            } else{
-              document.querySelector("#returnDateDiv").innerText =
-                getDate(date);
-            }
-            editEnable();
-          }
-        },
-        id: 3,
-        dateSelected: new Date(returnDateDiv.innerText),
-      });
-
-      eventDatePicker.setMin(new Date(pickupDateDiv.innerText));
-      returnDatePicker.setMin(new Date(pickupDateDiv.innerText));
   
       let start;
       let status = false;
@@ -1606,8 +1474,8 @@ const popUpTemplateDuplicate_For_Fitting = `\`
   
       const computeTotal = () => {
         let subTotal = 0;
-        for (let p of pricesDiv) {
-          subTotal += Number(p.innerText);
+        for (let p = 0; p < pricesDiv.length; p++) {
+          if(dataInputs[p].value != "" && inventoryOrderDataAll.indexOf(dataInputs[p].value) != -1) subTotal += Number(pricesDiv[p].innerText);
         }
   
         subTotalDiv.innerText = subTotal;
@@ -1615,9 +1483,18 @@ const popUpTemplateDuplicate_For_Fitting = `\`
           Number(others.innerText) +
           subTotal -
           Number(previouslyPaid.innerText);
+
+          console.log(totalDropDown)
+        if(Number(totalAmount.innerText) <= 0){
+          totalDropDown.disabled = true;
+          totalDropDown.value = "";
+        } else{
+          totalDropDown.disabled = false;
+          totalDropDown.value = "Pay Now";
+        }
       };
 
-      // computeTotal()
+      computeTotal()
   
       const enterDisable = (e) => {
         if (e.key == "Enter") e.preventDefault();
@@ -1691,7 +1568,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
         let condition = true;
 
         let pickupDate_ = ((new Date(pickupDate) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1 + 3;
-        let returnDate_ = ((new Date(returnDate) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1 + 3;
+        let returnDate_ = ((new Date(pickupDate) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1 + 3;
 
         const oldFinalData = [];
   
@@ -1792,7 +1669,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
   
         google.script.run
           .withSuccessHandler(Finised2)
-          .checkAvailabilityForUpdate(pickupDateDiv.innerText, returnDateDiv.innerText, finalData_);
+          .checkAvailabilityForUpdate(pickupDateDiv.innerText, pickupDateDiv.innerText, finalData_);
   
         status = false;
         setTime();
@@ -1823,9 +1700,9 @@ const popUpTemplateDuplicate_For_Fitting = `\`
           "'" + phoneDiv.innerText,
           pickupDateDiv.innerText,
           pickupMethod.value,
-          eventDateDiv.innerText,
-          returnDateDiv.innerText,
-          returnMethod.value,
+          pickupDateDiv.innerText,
+          pickupDateDiv.innerText,
+          "",
           subTotalDiv.innerText,
           others.innerText,
           previouslyPaid.innerText,
@@ -1838,7 +1715,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
   
         google.script.run
           .withSuccessHandler(Finised)
-          .bookForDuplicate_For_Fitting(orderNo, pickupDateDiv.innerText, eventDateDiv.innerText, returnDateDiv.innerText, logs, finalData_);
+          .bookForDuplicate_For_Fitting(orderNo, pickupDateDiv.innerText, pickupDateDiv.innerText, pickupDateDiv.innerText, logs, finalData_);
   
         status = false;
         setTime();

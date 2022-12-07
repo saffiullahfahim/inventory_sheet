@@ -32,6 +32,7 @@ const popUpTemplateUpdate = `\`
     .buttonDiv{
       position: absolute;
       right: 10px;
+      width: 100%;
     }
 
     button {
@@ -58,6 +59,8 @@ const popUpTemplateUpdate = `\`
     #cancelBtn{
       border: 1px solid red;
       color: red;
+      float: left;
+      margin-left: 10px;
     }
 
     #cancelBtn:hover {
@@ -70,13 +73,13 @@ const popUpTemplateUpdate = `\`
     }
 
     .time{
-      margin-top: 20px;
+      margin-top: 10px;
       font-size: 14px;
-      text-align: left;
+      text-align: center;
       font-family: Roboto, RobotoDraft, Helvetica, Arial, sans-serif;
       font-size: 16px;
       font-weight: 600;
-      margin-left: 20px;
+      margin-left: -150px;
     }
 
     select, .dataInput{
@@ -687,7 +690,7 @@ const popUpTemplateUpdate = `\`
           ></td>
            <td
             style="
-              border: 1px solid rgb(204, 204, 204);
+              /* border: 1px solid rgb(204, 204, 204); */
               overflow: hidden;
               padding: 2px 3px;
               vertical-align: bottom;
@@ -758,8 +761,14 @@ const popUpTemplateUpdate = `\`
               padding: 2px 3px;
               vertical-align: bottom;
               background-color: #fff;
+              border-color: rgb(0, 0, 0) rgb(204, 204, 204);
             "
-          ></td>
+          >
+              <select style="font-weight: bold;" id="totalDropDown">
+                <option>Pay Now</option>
+                <option>Pay Later</option>
+              </select>
+            </td>
           <td
             style="
               border-width: 1px;
@@ -1088,7 +1097,12 @@ const popUpTemplateUpdate = `\`
               vertical-align: bottom;
               background-color: #fff;
             "
-          ></td>
+          >
+            <select style="font-weight: bold;" id="totalDepositDropDown">
+              <option>Pay Later</option>
+              <option>Pay Now</option>
+            </select>
+          </td>
           <td
             style="
               border-width: 1px;
@@ -1312,7 +1326,15 @@ const popUpTemplateUpdate = `\`
 
     let creditM = "";
     let picupM1 = pickupDateDiv.innerText;
-    let pickupM2 = \\\`Upon pickup to pay another refundable deposit \\\${totalDeposit.value} in cash<br><br>Please display this order summary/message upon collection\\\`;
+    let depositPlasText = "";
+    if(totalDropDown.value == "Pay Later") depositPlasText = " + Balance RM" + totalAmount.innerText;
+
+    let pickupM2 = \\\`Upon pickup to pay another refundable deposit \\\${totalDeposit.value} in cash\\\${depositPlasText}<br><br>Please display this order summary/message upon collection\\\`;
+
+    if(totalDepositDropDown.value == "Pay Now"){
+      pickupM2 = \\\`Refundable deposit \\\${totalDeposit.value} \\\${depositPlasText}\\\`;
+    }
+    
     if(Number(totalAmount.innerText) == 0){
       TotalStr = "RM" + (Number(totalAmount.innerText) + Number(previouslyPaid.innerText)) + "(Previously paid RM" + previouslyPaid.innerText + ")";
     }
@@ -1320,7 +1342,11 @@ const popUpTemplateUpdate = `\`
       creditM = \\\`Credit balance RM\\\${-Number(totalAmount.innerText)} valid until \\\${returnDate}<br><br>\\\`;
       TotalStr = "RM" + (Number(totalAmount.innerText) + Number(previouslyPaid.innerText)) + "(Previously paid RM" + previouslyPaid.innerText + ")";
     } else{
-      TotalStr = "-(Previously paid RM" + previouslyPaid.innerText + ")=RM" + totalAmount.innerText;
+      if(totalDropDown.value == "Pay Later"){
+        TotalStr = "-(Previously paid RM" + previouslyPaid.innerText + ")=Balance RM" + totalAmount.innerText;
+      } else{
+        TotalStr = "-(Previously paid RM" + previouslyPaid.innerText + ")=RM" + totalAmount.innerText;
+      }
     }
 
     let nowTime = new Date().toLocaleDateString();
@@ -1333,7 +1359,11 @@ const popUpTemplateUpdate = `\`
 
     let PreviouslyPaid = Number(previouslyPaid.innerText);
     if(PreviouslyPaid == 0){
-      TotalStr = "RM" + totalAmount.innerText;
+      if(totalDropDown.value == "Pay Later"){
+        TotalStr = "Balance RM" + totalAmount.innerText;
+      } else{
+        TotalStr = "RM" + totalAmount.innerText;
+      }
     }
 
     let PostCost = Number(others.innerText);
@@ -1460,6 +1490,8 @@ const popUpTemplateUpdate = `\`
       const notesDiv = document.querySelectorAll("[note='note']");
       const pricesDiv = document.querySelectorAll("[price='price']");
       const subTotalDiv = document.querySelector("#subTotalDiv");
+      const totalDropDown = document.querySelector("#totalDropDown");
+      const totalDepositDropDown = document.querySelector("#totalDepositDropDown");
   
       const dataInputs = document.querySelectorAll(".dataInput");
       const allAvaliablity = document.querySelectorAll(".allAvaliablity");
@@ -1655,8 +1687,8 @@ const popUpTemplateUpdate = `\`
   
       const computeTotal = () => {
         let subTotal = 0;
-        for (let p of pricesDiv) {
-          subTotal += Number(p.innerText);
+        for (let p = 0; p < pricesDiv.length; p++) {
+          if(dataInputs[p].value != "" && inventoryOrderDataAll.indexOf(dataInputs[p].value) != -1) subTotal += Number(pricesDiv[p].innerText);
         }
   
         subTotalDiv.innerText = subTotal;
@@ -1664,9 +1696,18 @@ const popUpTemplateUpdate = `\`
           Number(others.innerText) +
           subTotal -
           Number(previouslyPaid.innerText);
+
+          console.log(totalDropDown)
+        if(Number(totalAmount.innerText) <= 0){
+          totalDropDown.disabled = true;
+          totalDropDown.value = "";
+        } else{
+          totalDropDown.disabled = false;
+          totalDropDown.value = "Pay Now";
+        }
       };
 
-      // computeTotal()
+      computeTotal()
   
       const enterDisable = (e) => {
         if (e.key == "Enter") e.preventDefault();

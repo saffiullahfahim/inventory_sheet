@@ -379,6 +379,9 @@ const pickupPreparation = () => {
   let index = 1;
   for (let date of DateWise.date) {
     let getColor_ = getColor(date);
+    if(new Date(date).getTime() < new Date(now).getTime()){
+      getColor_ = "#A9A9A9";
+    }
     //console.log(getDate(date));
     DateWise.data[date].pickup.sort((a, b) => {
       return GetOrderNoOnly(a[1]) - GetOrderNoOnly(b[1]);

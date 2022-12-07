@@ -641,7 +641,12 @@ const popUpTemplateBook = `\`
               vertical-align: bottom;
               background-color: #fff;
             "
-          ></td>
+          >
+            <select style="font-weight: bold;" id="totalDropDown">
+              <option>Pay Now</option>
+              <option>Pay Later</option>
+            </select>
+          </td>
           <td
             style="
               border-width: 1px;
@@ -911,7 +916,12 @@ const popUpTemplateBook = `\`
               vertical-align: bottom;
               background-color: #fff;
             "
-          ></td>
+          >
+            <select style="font-weight: bold;" id="totalDepositDropDown">
+              <option>Pay Later</option>
+              <option>Pay Now</option>
+            </select>
+          </td>
           <td
             style="
               border-width: 1px;
@@ -1115,6 +1125,9 @@ const popUpTemplateBook = `\`
     const pricesDiv = document.querySelectorAll("[price='price']");
     const subTotalDiv = document.querySelector("#subTotalDiv");
 
+    const totalDropDown = document.querySelector("#totalDropDown");
+    const totalDepositDropDown = document.querySelector("#totalDepositDropDown");
+
     const options = {
       pickupMethod: ["Pickup (Weekday 12PM-8PM Weekend PH 10AM-6PM)", "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)", "Early Pickup 10AM", "Lalamove (Weekday 12PM-8PM Weekend PH 10AM-6PM)"],
       returnMethod: ["Return", "Return post back by any courier except poslaju skynet", "Return by Midnight"],
@@ -1145,15 +1158,28 @@ const popUpTemplateBook = `\`
     }
 
     const computeTotal = () => {
-    let subTotal = 0;
-    for(let p of pricesDiv){
-      subTotal += Number(p.innerText);
-    }
+      let subTotal = 0;
+      for (let p = 0; p < pricesDiv.length; p++) {
+        subTotal += Number(pricesDiv[p].innerText);
+      }
 
-    subTotalDiv.innerText = subTotal;
-    totalAmount.innerText =
-      Number(others.innerText) + subTotal - Number(previouslyPaid.innerText);
-    }
+      subTotalDiv.innerText = subTotal;
+      totalAmount.innerText =
+        Number(others.innerText) +
+        subTotal -
+        Number(previouslyPaid.innerText);
+
+        console.log(totalDropDown)
+      if(Number(totalAmount.innerText) <= 0){
+        totalDropDown.disabled = true;
+        totalDropDown.value = "";
+      } else{
+        totalDropDown.disabled = false;
+        totalDropDown.value = "Pay Now";
+      }
+    };
+
+    computeTotal();
 
     const enterDisable = (e) => {
       if(e.key == "Enter") e.preventDefault();
@@ -1200,7 +1226,15 @@ const popUpTemplateBook = `\`
 
       let creditM = "";
       let picupM1 = pickupDate;
-      let pickupM2 = \\\`Upon pickup to pay another refundable deposit \\\${totalDeposit.value} in cash<br><br>Please display this order summary/message upon collection\\\`;
+      let depositPlasText = "";
+      if(totalDropDown.value == "Pay Later") depositPlasText = " + Balance RM" + totalAmount.innerText;
+
+      let pickupM2 = \\\`Upon pickup to pay another refundable deposit \\\${totalDeposit.value} in cash\\\${depositPlasText}<br><br>Please display this order summary/message upon collection\\\`;
+
+      if(totalDepositDropDown.value == "Pay Now"){
+        pickupM2 = \\\`Refundable deposit \\\${totalDeposit.value} \\\${depositPlasText}\\\`;
+      }
+
       if(Number(totalAmount.innerText) == 0){
         TotalStr = "RM" + (Number(totalAmount.innerText) + Number(previouslyPaid.innerText)) + "(Previously paid RM" + previouslyPaid.innerText + ")";
       }
@@ -1208,7 +1242,11 @@ const popUpTemplateBook = `\`
         creditM = \\\`Credit balance RM\\\${-Number(totalAmount.innerText)} valid until \\\${returnDate}<br><br>\\\`;
         TotalStr = "RM" + (Number(totalAmount.innerText) + Number(previouslyPaid.innerText)) + "(Previously paid RM" + previouslyPaid.innerText + ")";
       } else{
-        TotalStr = "-(Previously paid RM" + previouslyPaid.innerText + ")=RM" + totalAmount.innerText;
+        if(totalDropDown.value == "Pay Later"){
+          TotalStr = "-(Previously paid RM" + previouslyPaid.innerText + ")=Balance RM" + totalAmount.innerText;
+        } else{
+          TotalStr = "-(Previously paid RM" + previouslyPaid.innerText + ")=RM" + totalAmount.innerText;
+        }
       }
 
       let nowTime = new Date().toLocaleDateString();
@@ -1221,7 +1259,11 @@ const popUpTemplateBook = `\`
 
       let PreviouslyPaid = Number(previouslyPaid.innerText);
       if(PreviouslyPaid == 0){
-        TotalStr = "RM" + totalAmount.innerText;
+        if(totalDropDown.value == "Pay Later"){
+          TotalStr = "Balance RM" + totalAmount.innerText;
+        } else{
+          TotalStr = "RM" + totalAmount.innerText;
+        }
       }
 
       let PostCost = Number(others.innerText);
