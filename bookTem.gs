@@ -1216,7 +1216,7 @@ const popUpTemplateBook = `\`
         if(String(v[1]).trim() != ""){
           itemsData += "<br>" + v[1];
         }
-        if(String(v[2]).trim() != ""){
+        if(String(v[2]).trim() != "" && eventDiv.innerText.toLowerCase().trim() != "(fitting)"){
           itemsData += "<br>RM" + String(v[2]).trim();
           totalStr.push("RM" + v[2]);
         }
@@ -1393,9 +1393,9 @@ const popUpTemplateBook = `\`
         subTotalDiv.innerText,
         others.innerText,
         previouslyPaid.innerText,
-        totalAmount.innerText,
+        [totalAmount.innerText, totalDropDown.value].toString(),
         saleAdvisor,
-        totalDeposit.value,
+        [totalDeposit.value, totalDepositDropDown.value].toString(),
       ];
 
 

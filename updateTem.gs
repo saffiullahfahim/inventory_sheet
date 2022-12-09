@@ -1316,7 +1316,7 @@ const popUpTemplateUpdate = `\`
       if(String(v[1]).trim() != ""){
         itemsData += "<br>" + v[1];
       }
-      if(String(v[2]).trim() != ""){
+      if(String(v[2]).trim() != "" && eventDiv.innerText.toLowerCase().trim() != "(fitting)"){
         itemsData += "<br>RM" + String(v[2]).trim();
         totalStr.push("RM" + v[2]);
       }
@@ -1595,9 +1595,12 @@ const popUpTemplateUpdate = `\`
       saleAdvisor1.value = saleAdvisorObj[0];
       saleAdvisor2.value = saleAdvisorObj[1];
       saleAdvisor3.value = saleAdvisorObj[2];
-      totalDeposit.value = data[14];
+      const totalDepositData = data[14].split(",");
+      totalDepositDropDown.value = totalDepositData[1];
+      totalDeposit.value = totalDepositData[0];
       others.innerText = data[10];
-      const previouslyPaidCount = Number(data[12]) + Number(data[11]);
+      const totalAmountData = data[12].split(",");
+      const previouslyPaidCount = Number(totalAmountData[0]) + Number(data[11]);
       previouslyPaid.innerText = (previouslyPaidCount >= 0) ? previouslyPaidCount : -previouslyPaidCount;
       console.log(subTotal, typeof subTotal)
       totalAmount.innerText = Number(others.innerText) + Number(subTotal) -  Number(previouslyPaid.innerText);;
@@ -1708,6 +1711,8 @@ const popUpTemplateUpdate = `\`
       };
 
       computeTotal()
+
+      totalDropDown.value = totalAmountData[1];
   
       const enterDisable = (e) => {
         if (e.key == "Enter") e.preventDefault();
@@ -2034,9 +2039,9 @@ const popUpTemplateUpdate = `\`
           subTotalDiv.innerText,
           others.innerText,
           previouslyPaid.innerText,
-          totalAmount.innerText,
+          [totalAmount.innerText, totalDropDown.value].toString(),
           saleAdvisor,
-          totalDeposit.value,
+          [totalDeposit.value, totalDepositDropDown.value].toString(),
         ];
   
         let orderNo = eventDiv.innerText + " " + custDiv.innerText + " " + phoneDiv.innerText;
