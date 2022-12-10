@@ -61,7 +61,7 @@ const popUpTemplateBook = `\`
   </style>
   <body><div></div></body>
   <script>
-    const data = JSON.parse(\\\`\${orderData}\\\`);
+    const data = \${orderData};
 
     const startDate = "\${startDate}";
     const html = \\\`\\\\\\\`
@@ -361,6 +361,7 @@ const popUpTemplateBook = `\`
               background-color: rgb(243, 243, 243);
               border-bottom-color: #000;
             "
+            id="returnDateDiv"
           >
             \\\\\\\${returnDate}
           </td>
@@ -1181,6 +1182,27 @@ const popUpTemplateBook = `\`
 
     computeTotal();
 
+    if(new Date(pickupDate).toISOString() == new Date(new Date().toLocaleDateString()).toISOString()){
+      totalDepositDropDown.value = "Pay Now";
+      totalDepositDropDown.disabled = true;
+    }
+
+    returnMethod.onchange = (e) => {
+      if(e.target.value == "Return post back by any courier except poslaju skynet" && (new Date(returnDate).getTime() - 5 * 24 * 60 * 60 * 1000) < new Date(eventDate).getTime()){
+        returnDateDiv.style.background = "#ffb6b6";
+        bookBtn.disabled = true;
+        bookBtn.style.background = "#eee";
+        bookBtn.style.color = "#888";
+        bookBtn.style.borderColor = "#aaa";
+      } else{
+        returnDateDiv.style.background = "rgb(243, 243, 243)";
+        bookBtn.disabled = false;
+        bookBtn.style.background = "";
+        bookBtn.style.color = "";
+        bookBtn.style.borderColor = "";
+      }
+    }
+
     const enterDisable = (e) => {
       if(e.key == "Enter") e.preventDefault();
     }
@@ -1211,13 +1233,16 @@ const popUpTemplateBook = `\`
       let itemsData = "";
       let totalStr = [];
       let TotalStr = "";
-      finalData_.forEach((v, i) => {
+      finalData_.forEach((v, i, a) => {
         itemsData += v[0];
         if(String(v[1]).trim() != ""){
           itemsData += "<br>" + v[1];
         }
         if(String(v[2]).trim() != "" && eventDiv.innerText.toLowerCase().trim() != "(fitting)"){
-          itemsData += "<br>RM" + String(v[2]).trim();
+          if(totalDropDown.value == "Pay Later" && totalStr.length == 0 && a.length - 1 == i && Number(String(v[2]).trim()) != 0 && Number(others.innerText) == 0){
+            itemsData += "<br>Balance RM" + String(v[2]).trim();
+          }
+          else itemsData += "<br>RM" + String(v[2]).trim();
           totalStr.push("RM" + v[2]);
         }
         // itemsData += \\\`\\\${v[0]}<br>\\\${v[1]}<br>\\\${v[2]}<br><br>\\\`;
@@ -1308,6 +1333,17 @@ const popUpTemplateBook = `\`
       saleAdvisor += " " + saleAdvisor3.value;
     }
 
+    const getDate = (date) => {
+      let date_ = new Date(date);
+      let months  = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+      return String(date_.getDate())  + months[date_.getMonth()] + date_.getFullYear().toString().slice(-2)
+    }
+
+    let returnDateValue = returnDate;
+    if(returnMethod.value == "Return post back by any courier except poslaju skynet"){
+      returnDateValue = getDate(new Date(returnDateValue).getTime() - 5 * 24 * 60 * 60 * 1000)
+    }
+
     if(eventDiv.innerText.toLowerCase().trim() == "(fitting)"){
       finalMessage.innerHTML = \\\`
       <p>\\\${orderNo} [\\\${saleAdvisor}]<br>(FITTING) \\\${custDiv.innerText} \\\${phoneDiv.innerText}
@@ -1323,7 +1359,7 @@ const popUpTemplateBook = `\`
       finalMessage.innerHTML = \\\`
       <p>\\\${orderNo} [\\\${saleAdvisor}]<br>(LALAMOVE) \\\${custDiv.innerText} \\\${phoneDiv.innerText}
       <br>
-      \\\${picupM1} Lalamove<br>\\\${eventDate} Event<br>\\\${returnDate} \\\${returnMethod.value} (Weekday 12PM-8PM Weekend PH 10AM-6PM)<br><br>
+      \\\${picupM1} Lalamove<br>\\\${eventDate} Event<br>\\\${returnDateValue} \\\${returnMethod.value} (Weekday 12PM-8PM Weekend PH 10AM-6PM)<br><br>
       \\\${itemsData}\\\${TotalStr}
       \\\${creditM}
       \\\${pickupM2}</p>
@@ -1345,7 +1381,7 @@ const popUpTemplateBook = `\`
       finalMessage.innerHTML = \\\`
       <p>\\\${orderNo} [\\\${saleAdvisor}]<br>\\\${eventDiv.innerText} \\\${custDiv.innerText} \\\${phoneDiv.innerText}
       <br>
-      \\\${picupM1} \\\${pickupMethod.value}<br>\\\${eventDate} Event<br>\\\${returnDate} \\\${returnMethod.value}<br><br>
+      \\\${picupM1} \\\${pickupMethod.value}<br>\\\${eventDate} Event<br>\\\${returnDateValue} \\\${returnMethod.value}<br><br>
       \\\${itemsData}\\\${TotalStr}
       \\\${creditM}
       \\\${pickupM2}</p>

@@ -149,6 +149,8 @@ const pickupPreparation = () => {
 
   const PreviousStored = {};
 
+  const PreviousReturnDate = {};
+
   if (PreparationValues[0][0] != "") {
     for (let date = 0; date < PreparationValues[0].length; date += 3) {
       let date_ = new Date(PreparationValues[0][date] + new Date().getFullYear()).toLocaleDateString();
@@ -212,6 +214,10 @@ const pickupPreparation = () => {
           PreviousStored[date_].align.push(["middle", "middle", "middle"]);
           PreviousStored[date_].font.push(["bold", "bold", "bold"]);
           PreviousStored[date_].data.push([String(PreparationValues[i][date]).trim(), String(PreparationValues[i][date + 1]).trim(), String(PreparationValues[i][date + 2]).trim()]);
+          if(String(PreparationValues[i][date + 2]).trim().toLowerCase() != "returned"){
+            if(PreviousReturnDate[String(PreparationValues[i][date]).trim()]) PreviousReturnDate[String(PreparationValues[i][date]).trim()].push(date_);
+            else PreviousReturnDate[String(PreparationValues[i][date]).trim()] = [date_];
+          }
         } else if (String(PreparationValues[i][date + 1]).trim().indexOf("#") >= 0 && isNaN(GetOrderNoOnly(PreparationValues[i][date + 1])) == false) {
           if (String(PreparationValues[i][date + 1]).trim().toLowerCase().indexOf("alter") >= 0) {
             PreviousStored[date_].color.push(["#ffffff", "#B7E1CD", "#ffffff"]);
@@ -249,6 +255,7 @@ const pickupPreparation = () => {
       let date = new Date(startTime + (24 * 60 * 60 * 1000 * dateNo)).toLocaleDateString();
       // console.log(date)
       let previousData = "";
+      let previousByColor = "#fff";
 
       // if(now == date) console.log(PreviousData[date])
       if (PreviousData[String(v[0]).trim() + GetOrderNO(String(v[dateNo + 1]).trim())]) {
@@ -257,6 +264,29 @@ const pickupPreparation = () => {
         // console.log(String(v[0]).trim() + GetOrderNO(String(v[dateNo + 1]).trim()) + " " + previousData);
       }
 
+      if(GetOrderNO(String(v[dateNo + 1]).trim())[0] != "-" && previousData.toLowerCase() != "returned" && PreviousReturnDate[String(v[0]).trim()]){
+        const PreviousReturnDateData = PreviousReturnDate[String(v[0]).trim()];
+        let presentDate = new Date(date);
+        for(let PreviousReturnDateDataValue of PreviousReturnDateData){
+          let returnDate = new Date(PreviousReturnDateDataValue);
+          let months  = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+          if(presentDate.getTime() - 24 * 60 * 60 * 1000 == returnDate.getTime()){
+            previousData = "b2b";
+            previousByColor = "#f00";
+          } else if(presentDate.getTime() > returnDate.getTime()){
+            previousData = String(returnDate.getDate())  + months[returnDate.getMonth()] + returnDate.getFullYear().toString().slice(-2);
+            if(returnDate.getFullYear() == presentDate.getFullYear()){
+              previousData = String(returnDate.getDate())  + months[returnDate.getMonth()];
+            }
+
+            previousData += " return";
+            previousByColor = "#f00";
+          }
+        }
+      }
+
+      // previousData = ""
       if (DateWise.data[date] == undefined) {
         DateWise.data[date] = {
           pickup: [],
@@ -306,8 +336,8 @@ const pickupPreparation = () => {
           DateWise.data[date].pickup.push([String(v[0]).trim(), String(v[dateNo + 1]).trim(), previousData]);
           //DateWise.color[date].pickup.push(["#6aa84f", "#6aa84f", "#6aa84f"]);
           if (String(v[dateNo + 1]).toLowerCase().indexOf("alter") >= 0) {
-            DateWise.color[date].pickup.push(["#ffffff", "#B7E1CD", "#ffffff", GetOrderNoOnly(v[dateNo + 1])]);
-          } else DateWise.color[date].pickup.push(["#ffffff", "#ffffff", "#ffffff", GetOrderNoOnly(v[dateNo + 1])]);
+            DateWise.color[date].pickup.push(["#ffffff", "#B7E1CD", previousByColor, GetOrderNoOnly(v[dateNo + 1])]);
+          } else DateWise.color[date].pickup.push(["#ffffff", "#ffffff", previousByColor, GetOrderNoOnly(v[dateNo + 1])]);
           DateWise.rule[date].pickup.push([rule]);
           DateWise.wrap[date].pickup.push([true, true, false]);
           DateWise.align[date].pickup.push(["middle", "middle", "middle"])

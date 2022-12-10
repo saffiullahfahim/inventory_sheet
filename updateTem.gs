@@ -1301,24 +1301,28 @@ const popUpTemplateUpdate = `\`
   const getDate = (date) => {
     let date_ = new Date(date);
     let months  = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-    return String(date_.getDate()).padStart(2, "0")  + months[date_.getMonth()] + date_.getFullYear().toString().slice(-2)
+    return String(date_.getDate())  + months[date_.getMonth()] + date_.getFullYear().toString().slice(-2)
   }
 
   let timeout;
+  let start;
   // finised function
   const Finised = ({time: s_time, data, orderNo, finalData_, result}) => {
     console.log(result, finalData_)
     let itemsData = "";
     let totalStr = [];
     let TotalStr = "";
-    finalData_.forEach((v, i) => {
+    finalData_.forEach((v, i, a) => {
       itemsData += v[0];
       if(String(v[1]).trim() != ""){
         itemsData += "<br>" + v[1];
       }
       if(String(v[2]).trim() != "" && eventDiv.innerText.toLowerCase().trim() != "(fitting)"){
-        itemsData += "<br>RM" + String(v[2]).trim();
-        totalStr.push("RM" + v[2]);
+         if(totalDropDown.value == "Pay Later" && totalStr.length == 0 && a.length - 1 == i && Number(String(v[2]).trim()) != 0 && Number(others.innerText) == 0){
+            itemsData += "<br>Balance RM" + String(v[2]).trim();
+          }
+          else itemsData += "<br>RM" + String(v[2]).trim();
+          totalStr.push("RM" + v[2]);
       }
       // itemsData += \\\`\\\${v[0]}<br>\\\${v[1]}<br>\\\${v[2]}<br><br>\\\`;
       itemsData += "<br>";
@@ -1406,6 +1410,11 @@ const popUpTemplateUpdate = `\`
       saleAdvisor += " " + saleAdvisor3.value;
     }
 
+    let returnDateValue = returnDateDiv.innerText;
+    if(returnMethod.value == "Return post back by any courier except poslaju skynet"){
+      returnDateValue = getDate(new Date(returnDateValue).getTime() - 5 * 24 * 60 * 60 * 1000)
+    }
+
       if(eventDiv.innerText.toLowerCase().trim() == "(fitting)"){
       finalMessage.innerHTML = \\\`
       <p>\\\${orderNo} [\\\${saleAdvisor}]<br>(FITTING) \\\${custDiv.innerText} \\\${phoneDiv.innerText}
@@ -1421,7 +1430,7 @@ const popUpTemplateUpdate = `\`
       finalMessage.innerHTML = \\\`
       <p>\\\${orderNo} [\\\${saleAdvisor}]<br>(LALAMOVE) \\\${custDiv.innerText} \\\${phoneDiv.innerText}
       <br>
-      \\\${picupM1} Lalamove<br>\\\${eventDate} Event<br>\\\${returnDate} \\\${returnMethod.value} (Weekday 12PM-8PM Weekend PH 10AM-6PM)<br><br>
+      \\\${picupM1} Lalamove<br>\\\${eventDateDiv.innerText} Event<br>\\\${returnDateValue} \\\${returnMethod.value} (Weekday 12PM-8PM Weekend PH 10AM-6PM)<br><br>
       \\\${itemsData}\\\${TotalStr}
       \\\${creditM}
       \\\${pickupM2}</p>
@@ -1443,7 +1452,7 @@ const popUpTemplateUpdate = `\`
       finalMessage.innerHTML = \\\`
       <p>\\\${orderNo} [\\\${saleAdvisor}]<br>\\\${eventDiv.innerText} \\\${custDiv.innerText} \\\${phoneDiv.innerText}
       <br>
-      \\\${picupM1} \\\${pickupMethod.value}<br>\\\${eventDateDiv.innerText} Event<br>\\\${returnDateDiv.innerText} \\\${returnMethod.value}<br><br>
+      \\\${picupM1} \\\${pickupMethod.value}<br>\\\${eventDateDiv.innerText} Event<br>\\\${returnDateValue} \\\${returnMethod.value}<br><br>
       \\\${itemsData}\\\${TotalStr}
       \\\${creditM}
       \\\${pickupM2}</p>
@@ -1597,6 +1606,10 @@ const popUpTemplateUpdate = `\`
       saleAdvisor3.value = saleAdvisorObj[2];
       const totalDepositData = data[14].split(",");
       totalDepositDropDown.value = totalDepositData[1];
+      if(new Date(pickupDateDiv.innerText).toISOString() == new Date(new Date().toLocaleDateString()).toISOString()){
+        totalDepositDropDown.value = "Pay Now";
+        totalDepositDropDown.disabled = true;
+      }
       totalDeposit.value = totalDepositData[0];
       others.innerText = data[10];
       const totalAmountData = data[12].split(",");
@@ -1635,6 +1648,13 @@ const popUpTemplateUpdate = `\`
             eventDatePicker.setMin(new Date(getDate(date)));
             returnDatePicker.setMin(new Date(getDate(date)));
             editEnable();
+            if(new Date(pickupDateDiv.innerText).toISOString() == new Date(new Date().toLocaleDateString()).toISOString()){
+              totalDepositDropDown.value = "Pay Now";
+              totalDepositDropDown.disabled = true;
+            } else{
+              totalDepositDropDown.value = "Pay Later";
+              totalDepositDropDown.disabled = false;
+            }
           }
         },
         id: 1,
@@ -1669,6 +1689,19 @@ const popUpTemplateUpdate = `\`
                 getDate(date);
             }
             editEnable();
+            if(returnMethod.value == "Return post back by any courier except poslaju skynet" && (new Date(returnDateDiv.innerText).getTime() - 5 * 24 * 60 * 60 * 1000) < new Date(eventDateDiv.innerText).getTime()){
+              returnDateDiv.style.background = "#ffb6b6";
+              bookBtn.disabled = true;
+              bookBtn.style.background = "#eee";
+              bookBtn.style.color = "#888";
+              bookBtn.style.borderColor = "#aaa";
+            } else{
+              returnDateDiv.style.background = "rgb(243, 243, 243)";
+              bookBtn.disabled = false;
+              bookBtn.style.background = "";
+              bookBtn.style.color = "";
+              bookBtn.style.borderColor = "";
+            }
           }
         },
         id: 3,
@@ -1678,7 +1711,6 @@ const popUpTemplateUpdate = `\`
       eventDatePicker.setMin(new Date(pickupDateDiv.innerText));
       returnDatePicker.setMin(new Date(pickupDateDiv.innerText));
   
-      let start;
       let status = false;
   
       const setTime = () => {
@@ -1713,6 +1745,22 @@ const popUpTemplateUpdate = `\`
       computeTotal()
 
       totalDropDown.value = totalAmountData[1];
+
+      returnMethod.onchange = (e) => {
+        if(e.target.value == "Return post back by any courier except poslaju skynet" && (new Date(returnDateDiv.innerText).getTime() - 5 * 24 * 60 * 60 * 1000) < new Date(eventDateDiv.innerText).getTime()){
+          returnDateDiv.style.background = "#ffb6b6";
+          bookBtn.disabled = true;
+          bookBtn.style.background = "#eee";
+          bookBtn.style.color = "#888";
+          bookBtn.style.borderColor = "#aaa";
+        } else{
+          returnDateDiv.style.background = "rgb(243, 243, 243)";
+          bookBtn.disabled = false;
+          bookBtn.style.background = "";
+          bookBtn.style.color = "";
+          bookBtn.style.borderColor = "";
+        }
+      }
   
       const enterDisable = (e) => {
         if (e.key == "Enter") e.preventDefault();

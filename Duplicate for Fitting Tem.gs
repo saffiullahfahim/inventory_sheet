@@ -1199,6 +1199,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
   }
 
   let timeout;
+  let start;
   // finised function
   const Finised = ({time: s_time, data, orderNo, finalData_, result}) => {
     console.log(result, finalData_)
@@ -1455,14 +1456,25 @@ const popUpTemplateDuplicate_For_Fitting = `\`
             document.querySelector("#pickupDateDiv").innerText =
               getDate(date);
             editEnable();
+            if(new Date(pickupDateDiv.innerText).toISOString() == new Date(new Date().toLocaleDateString()).toISOString()){
+              totalDepositDropDown.value = "Pay Now";
+              totalDepositDropDown.disabled = true;
+            } else{
+              totalDepositDropDown.value = "Pay Later";
+              totalDepositDropDown.disabled = false;
+            }
           }
         },
         id: 1,
         dateSelected: new Date(pickupDateDiv.innerText),
       });
+
+      if(new Date(pickupDateDiv.innerText).toISOString() == new Date(new Date().toLocaleDateString()).toISOString()){
+        totalDepositDropDown.value = "Pay Now";
+        totalDepositDropDown.disabled = true;
+      }
   
   
-      let start;
       let status = false;
   
       const setTime = () => {
