@@ -142,7 +142,7 @@ const pickupPreparation = () => {
 
   // preparation data
 
-  const PreparationRange = preparationSheet.getRange(1, 1, preparationLast, 14 * 3);
+  const PreparationRange = preparationSheet.getRange(4, 1, preparationLast, 14 * 3);
   const PreparationValues = PreparationRange.getDisplayValues();
 
   const PreviousData = {};
@@ -397,7 +397,7 @@ const pickupPreparation = () => {
   });
 
   // PreparationRange.clearFormat();
-  preparationSheet.getRange(1, 1, 4000, 14 * 3).setBorder(false, false, false, false, false, false).setBackground("white").clearDataValidations().clear({ contentsOnly: true })
+  preparationSheet.getRange(3, 1, 4000, 14 * 3).setBorder(false, false, false, false, false, false).setBackground("white").clearDataValidations().clear({ contentsOnly: true })
 
   const blankFourRow = [["", "", ""], ["", "", ""], ["", "", ""], ["", "", ""]];
   const blankFourRule = [[rule], [rule], [rule], [rule]];
@@ -478,17 +478,17 @@ const pickupPreparation = () => {
 
 
     if (dateWiseRule.length) {
-      const ruleRange = preparationSheet.getRange(2, index + 2, dateWiseRule.length, 1);
+      const ruleRange = preparationSheet.getRange(5, index + 2, dateWiseRule.length, 1);
       ruleRange.setDataValidations(dateWiseRule);
     }
-    const range = preparationSheet.getRange(1, index, dateWiseData.length, 3);
+    const range = preparationSheet.getRange(4, index, dateWiseData.length, 3);
 
     /// preparationSheet.getRange(1, index, preparationLast, 3).setBorder(false, false, false, false, false, false);
     // console.log(range.getA1Notation())
     range.setValues(dateWiseData).setBackgrounds(dateWiseColor).setVerticalAlignment("middle").setFontWeight("bold").setFontSize(8);
     // range.setWrapStrategy();
     range.setBorder(true, true, true, true, false, false);
-    if (dateWiseData.length - 1 > 0) preparationSheet.getRange(2, index, dateWiseData.length - 1, 3).setBorder(true, true, true, true, false, false);
+    if (dateWiseData.length - 1 > 0) preparationSheet.getRange(5, index, dateWiseData.length - 1, 3).setBorder(true, true, true, true, false, false);
     index += 3;
   }
 
