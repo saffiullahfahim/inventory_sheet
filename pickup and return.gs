@@ -73,7 +73,7 @@ const getPreparationData = (type) => {
             PreparationData.return[mobileNo][GetOrderNoOnly(PreparationValues[i][date + 1])].data[String(PreparationValues[i][date]).trim()] = data;
           } else {
             PreparationData.return[mobileNo][GetOrderNoOnly(PreparationValues[i][date + 1])] = {
-              date: date_,
+              date: getDate(date_),
               data: {[String(PreparationValues[i][date]).trim()] : data}
             }
           }
@@ -91,7 +91,7 @@ const getPreparationData = (type) => {
             PreparationData.pickup[mobileNo][GetOrderNoOnly(PreparationValues[i][date + 1])].data[String(PreparationValues[i][date]).trim()] = data;
           } else {
             PreparationData.pickup[mobileNo][GetOrderNoOnly(PreparationValues[i][date + 1])] = {
-              date: date_,
+              date: getDate(date_),
               data: {[String(PreparationValues[i][date]).trim()] : data}
             }
           }
