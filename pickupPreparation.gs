@@ -214,8 +214,8 @@ const pickupPreparation = () => {
           PreviousStored[date_].align.push(["middle", "middle", "middle"]);
           PreviousStored[date_].font.push(["bold", "bold", "bold"]);
           PreviousStored[date_].data.push([String(PreparationValues[i][date]).trim(), String(PreparationValues[i][date + 1]).trim(), String(PreparationValues[i][date + 2]).trim()]);
-          if(String(PreparationValues[i][date + 2]).trim().toLowerCase() != "returned"){
-            if(PreviousReturnDate[String(PreparationValues[i][date]).trim()]) PreviousReturnDate[String(PreparationValues[i][date]).trim()].push(date_);
+          if (String(PreparationValues[i][date + 2]).trim().toLowerCase() != "returned") {
+            if (PreviousReturnDate[String(PreparationValues[i][date]).trim()]) PreviousReturnDate[String(PreparationValues[i][date]).trim()].push(date_);
             else PreviousReturnDate[String(PreparationValues[i][date]).trim()] = [date_];
           }
         } else if (String(PreparationValues[i][date + 1]).trim().indexOf("#") >= 0 && isNaN(GetOrderNoOnly(PreparationValues[i][date + 1])) == false) {
@@ -264,27 +264,52 @@ const pickupPreparation = () => {
         // console.log(String(v[0]).trim() + GetOrderNO(String(v[dateNo + 1]).trim()) + " " + previousData);
       }
 
-      if(GetOrderNO(String(v[dateNo + 1]).trim())[0] != "-" && previousData.toLowerCase() != "returned" && PreviousReturnDate[String(v[0]).trim()]){
-        const PreviousReturnDateData = PreviousReturnDate[String(v[0]).trim()];
-        let presentDate = new Date(date);
-        for(let PreviousReturnDateDataValue of PreviousReturnDateData){
-          let returnDate = new Date(PreviousReturnDateDataValue);
-          let months  = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-
-          if(presentDate.getTime() - 24 * 60 * 60 * 1000 == returnDate.getTime()){
-            previousData = "b2b";
+      if (GetOrderNO(String(v[dateNo + 1]).trim())[0] != "-") {
+        if(previousData.toLowerCase().indexOf("return") >= 0){
+          let presentDate = new Date(previousData.toLowerCase().replace("return", "").trim() + new Date().getFullYear()).toLocaleDateString();
+          if (new Date(previousData.toLowerCase().replace("return", "").trim()).getFullYear() == new Date().getFullYear() || new Date(previousData.toLowerCase().replace("return", "").trim()).getFullYear() == new Date().getFullYear() - 1) {
+            presentDate = new Date(previousData.toLowerCase().replace("return", "").trim()).toLocaleDateString();
+          }
+          let previousDate = new Date(new Date(now).getTime() - (3 * 24 * 60 * 60 * 1000)).toLocaleDateString();
+          if(new Date(presentDate) <= new Date(previousDate)){
             previousByColor = "#f00";
-          } else if(presentDate.getTime() > returnDate.getTime()){
-            previousData = String(returnDate.getDate())  + months[returnDate.getMonth()] + returnDate.getFullYear().toString().slice(-2);
-            if(returnDate.getFullYear() == presentDate.getFullYear()){
-              previousData = String(returnDate.getDate())  + months[returnDate.getMonth()];
+          } else {
+            previousData = "";
+            previousByColor = "#fff";
+          }
+        }
+
+        if(previousData.toLowerCase().indexOf("b2b") >= 0){
+          previousData = "";
+          previousByColor = "#fff";
+        }
+
+        if (PreviousReturnDate[String(v[0]).trim()]) {
+          const PreviousReturnDateData = PreviousReturnDate[String(v[0]).trim()];
+          let presentDate = new Date(date);
+          for (let PreviousReturnDateDataValue of PreviousReturnDateData) {
+            let returnDate = new Date(PreviousReturnDateDataValue);
+            let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+
+            if (presentDate.getTime() - 24 * 60 * 60 * 1000 == returnDate.getTime()) {
+              previousData = "b2b";
+              previousByColor = "#f00";
+            } else if (presentDate.getTime() > returnDate.getTime()) {
+              previousData = String(returnDate.getDate()) + months[returnDate.getMonth()] + returnDate.getFullYear().toString().slice(-2);
+              if (returnDate.getFullYear() == presentDate.getFullYear()) {
+                previousData = String(returnDate.getDate()) + months[returnDate.getMonth()];
+              }
+
+              previousData += " return";
+              previousByColor = "#f00";
             }
-
-            previousData += " return";
-            previousByColor = "#f00";
           }
         }
       }
+      // else if(GetOrderNO(String(v[dateNo + 1]).trim())[0] != "-" && previousData.toLowerCase().indexOf("return") >= 0 && PreviousReturnDate[String(v[0]).trim()] == undefined){
+      //   previousData = "";
+      //   previousByColor = "#fff";
+      // }
 
       // previousData = ""
       if (DateWise.data[date] == undefined) {
@@ -409,7 +434,7 @@ const pickupPreparation = () => {
   let index = 1;
   for (let date of DateWise.date) {
     let getColor_ = getColor(date);
-    if(new Date(date).getTime() < new Date(now).getTime()){
+    if (new Date(date).getTime() < new Date(now).getTime()) {
       getColor_ = "#A9A9A9";
     }
     //console.log(getDate(date));
@@ -447,11 +472,11 @@ const pickupPreparation = () => {
     let dateWiseAlign = [["middle", "middle", "middle"], ...DateWise.align[date].pickup, ...DateWise.align[date].return];
     let dateWiseFont = [["bold", "normal", "normal"], ...DateWise.font[date].pickup, ...DateWise.font[date].return];
 
-    if(new Date(date).getTime() < new Date(now).getTime()) {
+    if (new Date(date).getTime() < new Date(now).getTime()) {
       PreviousStored[date] = {
         data: dateWiseData,
         color: dateWiseColor,
-        rule:  dateWiseRule,
+        rule: dateWiseRule,
         wrap: dateWiseWrap,
         align: dateWiseAlign,
         font: dateWiseFont
