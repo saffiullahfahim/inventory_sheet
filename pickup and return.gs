@@ -164,6 +164,7 @@ const pickup_or_return_submit = (order, data, type) => {
         }
 
         if (String(PreparationValues[i][date + 1]).trim().indexOf("-") >= 0 && GetOrderNO(String(PreparationValues[i][date + 1]).trim())[0] == "-" && isNaN(GetOrderNoOnly(PreparationValues[i][date + 1])) == false && type == "return" && GetOrderNoOnly(PreparationValues[i][date + 1]) == order) {
+          console.log(PreparationValues[i][date].trim() + " " + data[PreparationValues[i][date].trim()])
           if (data[PreparationValues[i][date].trim()] == "Yes") PreparationValues[i][date + 2] = "returned";
           else if (String(PreparationValues[i][date + 2]).trim().toLowerCase() == "returned") PreparationValues[i][date + 2] = "";
           if (rowStart == 0) rowStart = i + 4;
@@ -297,7 +298,7 @@ const pickup_or_return_submit = (order, data, type) => {
 
 
 const test0000 = () => {
-  Logger.log(pickup_or_return_submit(1003006, { "Marcelline White Bridal Gown": 'No', "Duchess Satin Wedding Gown": "No" }, "pickup"))
+  Logger.log(pickup_or_return_submit(1003009,{"S Brunnera Trickled Beads OS Ruffle Gown":"Yes","Black Swan ruffled hi low gown":"Yes","CD Angela Puffy Sleeves White ":"Yes","Estella Glitter Off Shoulder Bridal Ballgown":"Yes","Tarik Ediz Coralie Pink":"Yes"},"return"))
 }
 
 

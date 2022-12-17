@@ -923,7 +923,7 @@ confirmBtn.onclick = () => {
   const submitResult = {};
 
   for(let i = 0; i < finalData.length; i++){
-    submitResult[finalData[i][0]] = conditions[i].value;
+    submitResult[finalData[i][0].trim()] = conditions[i].value;
   }
 
   console.log(preparationData.order.substr(1), submitResult, preparationData.type);
