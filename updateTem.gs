@@ -127,9 +127,23 @@ const popUpTemplateUpdate = `\`
   </style>
   <body><div></div></body>
   <script>
-    const data = JSON.parse(\\\`\${orderData}\\\`);
-    const inventoryOrderDataAll = JSON.parse(\\\`\${inventoryOrderDataAll}\\\`);
-    
+    const data = \${orderData};
+
+    const inventoryOrderData = \${inventoryOrderData};
+
+    const inventoryOrderObj = {};
+    const inventoryOrderDataOnly = [];
+
+    inventoryOrderData.forEach((value, index, arr) => {
+      inventoryOrderDataOnly.push(value[1].trim());
+      inventoryOrderObj[value[1].trim()] = {
+        price: Number(value[0]),
+        index
+      }
+    });
+
+    const inventoryOrderDataOption = "<option>" + inventoryOrderDataOnly.join("</option><option>") + "</option>";
+
     const startDate = "\${startDate}";
     const html = \\\`\\\\\\\`
   <style>
@@ -1179,7 +1193,7 @@ const popUpTemplateUpdate = `\`
       </tbody>
     </table>
 
-    <datalist id="allItemsList">\${inventoryOrderData}</datalist>
+    <datalist id="allItemsList"></datalist>
 
     <div class="buttonDiv">
       <button id="bookBtn" fun="checkAvailability" type="button">Check Availability</button>
@@ -1215,7 +1229,9 @@ const popUpTemplateUpdate = `\`
     const itemsNo = Number(data[15]);
     for(let i = 16; i < 41; i++){
       if(data[i]){
-        finalData.push(data[i].split(","));
+        // let data_ = data[i].split(",");
+        // data_[2] = inventoryOrderObj[data_[0].trim()].price;
+        finalData.push(data[i]);
       } else{
         finalData.push(["", "", ""])
       }
@@ -1412,7 +1428,11 @@ const popUpTemplateUpdate = `\`
 
     let returnDateValue = returnDateDiv.innerText;
     if(returnMethod.value == "Return post back by any courier except poslaju skynet"){
-      returnDateValue = getDate(new Date(returnDateValue).getTime() - 5 * 24 * 60 * 60 * 1000)
+      returnDateValue = getDate(new Date(returnDateValue).getTime() - 5 * 24 * 60 * 60 * 1000);
+    }
+
+    if(pickupMethod.value == "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)"){
+      pickupM2 = "Before postage to bank in another " + pickupM2[0].toLowerCase() + pickupM2.substr(1);
     }
 
       if(eventDiv.innerText.toLowerCase().trim() == "(fitting)"){
@@ -1470,6 +1490,7 @@ const popUpTemplateUpdate = `\`
   // start funtion 
   (() => {
       document.querySelector("div").innerHTML = eval(html);
+      document.querySelector("#allItemsList").innerHTML = inventoryOrderDataOption;
   
       let Total = subTotal;
       const dataTable = document.querySelector("#dataTable");
@@ -1598,6 +1619,16 @@ const popUpTemplateUpdate = `\`
         eval(x).innerHTML = optionsData;
       }
 
+      if(eventDiv.innerText.trim().toLowerCase() == "(postage)"){
+        pickupMethod.value = "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)";
+      }
+
+      eventDiv.oninput = () => {
+        if(eventDiv.innerText.trim().toLowerCase() == "(postage)"){
+          pickupMethod.value = "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)";
+        }
+      }
+
       const saleAdvisorObj = data[13].split(",");
       pickupMethod.value = data[5];
       returnMethod.value = data[8];
@@ -1616,11 +1647,17 @@ const popUpTemplateUpdate = `\`
       const previouslyPaidCount = Number(totalAmountData[0]) + Number(data[11]);
       previouslyPaid.innerText = (previouslyPaidCount >= 0) ? previouslyPaidCount : -previouslyPaidCount;
       console.log(subTotal, typeof subTotal)
-      totalAmount.innerText = Number(others.innerText) + Number(subTotal) -  Number(previouslyPaid.innerText);;
-  
-      for (let input of dataInputs) {
+      totalAmount.innerText = Number(others.innerText) + Number(subTotal) -  Number(previouslyPaid.innerText);
+
+      for (let i = 0; i < dataInputs.length; i++)  {
+        let input = dataInputs[i];
         input.oninput = editEnable;
-        input.onchange = editEnable;
+        input.onchange = () => {
+          if(inventoryOrderObj[input.value.trim()] && isNaN(inventoryOrderObj[input.value.trim()].price) == false){
+            pricesDiv[i].innerText = inventoryOrderObj[input.value.trim()].price;
+          }
+          editEnable();
+        };
         input.focus = () => {
           input.select();
           input.setSelectionRange(0, input.value.length);
@@ -1723,7 +1760,7 @@ const popUpTemplateUpdate = `\`
       const computeTotal = () => {
         let subTotal = 0;
         for (let p = 0; p < pricesDiv.length; p++) {
-          if(dataInputs[p].value != "" && inventoryOrderDataAll.indexOf(dataInputs[p].value) != -1) subTotal += Number(pricesDiv[p].innerText);
+          if(dataInputs[p].value != "" && inventoryOrderObj[dataInputs[p].value.trim()]) subTotal += Number(pricesDiv[p].innerText);
         }
   
         subTotalDiv.innerText = subTotal;
@@ -1810,10 +1847,10 @@ const popUpTemplateUpdate = `\`
           let d = input.getAttribute("delete");
           let data = input.getAttribute("data");
           if(d){
-            finalData_.push(["", inventoryOrderDataAll.indexOf(data)])
+            finalData_.push(["", inventoryOrderObj[data.trim()].index])
           }
           if(input.value != ""){
-            finalData_.push([input.value, inventoryOrderDataAll.indexOf(data)])
+            finalData_.push([input.value, inventoryOrderObj[data.trim()].index])
           }
         }
   
@@ -1888,8 +1925,8 @@ const popUpTemplateUpdate = `\`
 
         let condition = true;
 
-        let pickupDate_ = ((new Date(pickupDate) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1 + 3;
-        let returnDate_ = ((new Date(returnDate) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1 + 3;
+        let pickupDate_ = ((new Date(pickupDate) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1 + 4;
+        let returnDate_ = ((new Date(returnDate) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1 + 4;
 
         const oldFinalData = [];
   
@@ -2030,7 +2067,7 @@ const popUpTemplateUpdate = `\`
           if(String(data).trim() == ""){
             finalData_.push(-1)
           }
-          else finalData_.push(inventoryOrderDataAll.indexOf(data))
+          else finalData_.push(inventoryOrderObj[data.trim()].index)
         }
   
         google.script.run
@@ -2056,10 +2093,10 @@ const popUpTemplateUpdate = `\`
         for (let input of dataInputs) {
           let data = input.getAttribute("data");
           if(data != ""){
-            oldFinalData.push(inventoryOrderDataAll.indexOf(data))
+            oldFinalData.push(inventoryOrderObj[data.trim()].index)
           }
-          if(input.value != "" && inventoryOrderDataAll.indexOf(input.value) != -1){
-            finalData_.push([input.value, inventoryOrderDataAll.indexOf(input.value), notesDiv[index].innerText, pricesDiv[index].innerText])
+          if(input.value != "" && inventoryOrderObj[input.value.trim()]){
+            finalData_.push([input.value, inventoryOrderObj[input.value.trim()].index, notesDiv[index].innerText, pricesDiv[index].innerText])
           }
 
           index++;
@@ -2124,10 +2161,10 @@ const popUpTemplateUpdate = `\`
         for (let input of dataInputs) {
           let data = input.getAttribute("data");
           if(data != ""){
-            oldFinalData.push(inventoryOrderDataAll.indexOf(data))
+            oldFinalData.push(inventoryOrderObj[data.trim()].index);
           }
-          if(input.value != "" && inventoryOrderDataAll.indexOf(input.value) != -1){
-            finalData_.push([input.value, inventoryOrderDataAll.indexOf(input.value)])
+          if(input.value != "" && inventoryOrderObj[input.value.trim()]){
+            finalData_.push([input.value, inventoryOrderObj[input.value.trim()].index])
           }
         }
   
@@ -2178,7 +2215,7 @@ const popUpTemplateUpdate = `\`
 
         let index = 0;
         for (let input of dataInputs) {
-          if(input.value != "" && inventoryOrderDataAll.indexOf(input.value) != -1){
+          if(input.value != "" && inventoryOrderObj[input.value.trim()]){
             finalData_.push([input.value, notesDiv[index].innerText, pricesDiv[index].innerText])
           }
 

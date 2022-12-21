@@ -127,7 +127,20 @@ const popUpTemplateDuplicate_For_Fitting = `\`
   <body><div></div></body>
   <script>
     const data = JSON.parse(\\\`\${logs}\\\`);
-    const inventoryOrderDataAll = JSON.parse(\\\`\${inventoryOrderDataAll}\\\`);
+    const inventoryOrderData = \${inventoryOrderData};
+
+    const inventoryOrderObj = {};
+    const inventoryOrderDataOnly = [];
+
+    inventoryOrderData.forEach((value, index, arr) => {
+      inventoryOrderDataOnly.push(value[1].trim());
+      inventoryOrderObj[value[1].trim()] = {
+        price: Number(value[0]),
+        index
+      }
+    });
+
+    const inventoryOrderDataOption = "<option>" + inventoryOrderDataOnly.join("</option><option>") + "</option>";
     
     const startDate = "\${startDate}";
     const html = \\\`\\\\\\\`
@@ -1079,7 +1092,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
       </tbody>
     </table>
 
-    <datalist id="allItemsList">\${inventoryOrderData}</datalist>
+    <datalist id="allItemsList"></datalist>
 
     <div class="buttonDiv">
       <button id="bookBtn" fun="checkAvailability" type="button">Check Availability</button>
@@ -1116,6 +1129,9 @@ const popUpTemplateDuplicate_For_Fitting = `\`
     }
 
     for (let i = 0; i < finalData.length; i++) {
+      if(finalData[i][0].trim() && inventoryOrderObj[finalData[i][0].trim()] && isNaN(inventoryOrderObj[finalData[i][0].trim()].price) == false){
+        finalData[i][2] = inventoryOrderObj[finalData[i][0].trim()].price;
+      }
       itemsRow += \\\`
   <tr style="height: 21px">
     <td
@@ -1323,7 +1339,8 @@ const popUpTemplateDuplicate_For_Fitting = `\`
   // start funtion 
   (() => {
       document.querySelector("div").innerHTML = eval(html);
-  
+      document.querySelector("#allItemsList").innerHTML = inventoryOrderDataOption;
+
       let Total = subTotal;
       const dataTable = document.querySelector("#dataTable");
       const finalDiv = document.querySelector("#finalDiv");
@@ -1437,9 +1454,15 @@ const popUpTemplateDuplicate_For_Fitting = `\`
       saleAdvisor2.value = saleAdvisorObj[1];
       saleAdvisor3.value = saleAdvisorObj[2];
       
-      for (let input of dataInputs) {
+      for (let i = 0; i < dataInputs.length; i++)  {
+        let input = dataInputs[i];
         input.oninput = editEnable;
-        input.onchange = editEnable;
+        input.onchange = () => {
+          if(inventoryOrderObj[input.value.trim()] && isNaN(inventoryOrderObj[input.value.trim()].price) == false){
+            pricesDiv[i].innerText = inventoryOrderObj[input.value.trim()].price;
+          }
+          editEnable();
+        };
         input.focus = () => {
           input.select();
           input.setSelectionRange(0, input.value.length);
@@ -1487,7 +1510,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
       const computeTotal = () => {
         let subTotal = 0;
         for (let p = 0; p < pricesDiv.length; p++) {
-          if(dataInputs[p].value != "" && inventoryOrderDataAll.indexOf(dataInputs[p].value) != -1) subTotal += Number(pricesDiv[p].innerText);
+          if(dataInputs[p].value != "" && inventoryOrderObj[dataInputs[p].value.trim()]) subTotal += Number(pricesDiv[p].innerText);
         }
   
         subTotalDiv.innerText = subTotal;
@@ -1532,7 +1555,16 @@ const popUpTemplateDuplicate_For_Fitting = `\`
       others.onkeyup = computeTotal;
       previouslyPaid.onkeydown = stringDisable;
       previouslyPaid.onkeyup = computeTotal;
-  
+
+      if(eventDiv.innerText.trim().toLowerCase() == "(postage)"){
+        pickupMethod.value = "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)";
+      }
+
+      eventDiv.oninput = () => {
+        if(eventDiv.innerText.trim().toLowerCase() == "(postage)"){
+          pickupMethod.value = "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)";
+        }
+      }
     
       copyBtn.onclick = () => {
         navigator.clipboard.writeText(finalMessage.innerText);
@@ -1579,8 +1611,8 @@ const popUpTemplateDuplicate_For_Fitting = `\`
 
         let condition = true;
 
-        let pickupDate_ = ((new Date(pickupDate) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1 + 3;
-        let returnDate_ = ((new Date(pickupDate) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1 + 3;
+        let pickupDate_ = ((new Date(pickupDate) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1 + 4;
+        let returnDate_ = ((new Date(pickupDate) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1 + 4;
 
         const oldFinalData = [];
   
@@ -1676,7 +1708,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
           if(String(data).trim() == ""){
             finalData_.push(-1)
           }
-          else finalData_.push(inventoryOrderDataAll.indexOf(data))
+          else finalData_.push(inventoryOrderObj[data.trim()].index)
         }
   
         google.script.run
@@ -1697,8 +1729,8 @@ const popUpTemplateDuplicate_For_Fitting = `\`
       
         let index = 0;
         for (let input of dataInputs) {
-          if(input.value != "" && inventoryOrderDataAll.indexOf(input.value) != -1){
-            finalData_.push([input.value, inventoryOrderDataAll.indexOf(input.value), notesDiv[index].innerText, pricesDiv[index].innerText])
+          if(input.value != "" && inventoryOrderObj[input.value.trim()]){
+            finalData_.push([input.value, inventoryOrderObj[input.value.trim()].index, notesDiv[index].innerText, pricesDiv[index].innerText])
           }
 
           index++;

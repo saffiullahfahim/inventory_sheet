@@ -125,7 +125,7 @@ const pickupPreparation = () => {
   const inventoryOrderLast = inventoryOrder.getLastRow();
   let preparationLast = preparationSheet.getLastRow();
   if (preparationLast == 0) preparationLast = 1;
-  const startDate$ = inventoryOrder.getRange("D1").getDisplayValue();
+  const startDate$ = inventoryOrder.getRange("E1").getDisplayValue();
   const now = new Date().toLocaleDateString();
 
   const preWithNow = new Date(new Date().getTime() - (3 * 24 * 60 * 60 * 1000)).toLocaleDateString();
@@ -138,7 +138,7 @@ const pickupPreparation = () => {
 
 
   // inventory data
-  const Data = inventoryOrder.getRange(3, 3, inventoryOrderLast - 2, 31 + startDate + 1).getDisplayValues();
+  const Data = inventoryOrder.getRange(3, 4, inventoryOrderLast - 2, 31 + startDate + 1).getDisplayValues();
 
   // preparation data
 
@@ -274,13 +274,13 @@ const pickupPreparation = () => {
           if(new Date(presentDate) <= new Date(previousDate)){
             previousByColor = "#f00";
           } else {
-            previousData = "";
+            previousData = "NEED WASH";
             previousByColor = "#fff";
           }
         }
 
         if(previousData.toLowerCase().indexOf("b2b") >= 0){
-          previousData = "";
+          previousData = "NEED WASH";
           previousByColor = "#fff";
         }
 

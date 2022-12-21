@@ -249,9 +249,9 @@ const CheckAvailability = (order) => {
     return new Date() - time;
   }
 
-  const startDate = inventoryOrder.getRange("D1").getDisplayValue();
+  const startDate = inventoryOrder.getRange("E1").getDisplayValue();
   const inventoryOrderLast = inventoryOrder.getLastRow();
-  const inventoryOrderData = JSON.stringify(inventoryOrder.getRange(`C1:C${inventoryOrderLast}`).getValues()).replace(/\[/g, "").replace(/\]/g, "").replace(/"/g, "").split(",");
+  const inventoryOrderData = JSON.stringify(inventoryOrder.getRange(`D1:D${inventoryOrderLast}`).getValues()).replace(/\[/g, "").replace(/\]/g, "").replace(/"/g, "").split(",");
 
   let pickupDate = ((new Date(pickupValue) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1;
   let eventDate = ((new Date(eventValue) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1;
@@ -273,7 +273,7 @@ const CheckAvailability = (order) => {
   }
 
   let dataList = orderSheet.getRange(`${dataColumn + (orderStart + 4 + 1)}:${dataColumn + (orderStart + 4 + 25)}`).getValues();
-  let inventoryOrderDataColors = inventoryOrder.getRange(1, (pickupDate + 3), inventoryOrderLast, (returnDate - pickupDate + 1)).getBackgrounds();
+  let inventoryOrderDataColors = inventoryOrder.getRange(1, (pickupDate + 4), inventoryOrderLast, (returnDate - pickupDate + 1)).getBackgrounds();
 
   // console.log(inventoryOrderDataColors)
 
@@ -377,7 +377,7 @@ const goToInventory = () => {
   const ss = SpreadsheetApp.getActiveSpreadsheet()
   const orderSheet = ss.getSheetByName('Open order');
   const inventoryOrder = ss.getSheetByName('inventory and order');
-  const startDate = inventoryOrder.getRange("D1").getDisplayValue();
+  const startDate = inventoryOrder.getRange("E1").getDisplayValue();
 
   const cell = orderSheet.getCurrentCell();
 
@@ -394,14 +394,14 @@ const goToInventory = () => {
   const returnDateRange = eventDateColumn + (orderStart + 3);
 
   const inventoryOrderLast = inventoryOrder.getLastRow();
-  const inventoryOrderData = JSON.stringify(inventoryOrder.getRange(`C1:C${inventoryOrderLast}`).getValues()).replace(/\[/g, "").replace(/\]/g, "").replace(/"/g, "").split(",");
+  const inventoryOrderData = JSON.stringify(inventoryOrder.getRange(`D1:D${inventoryOrderLast}`).getValues()).replace(/\[/g, "").replace(/\]/g, "").replace(/"/g, "").split(",");
 
   let pickupDate = ((new Date(orderSheet.getRange(pickupDateRange).getDisplayValue()) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1;
   let returnDate = ((new Date(orderSheet.getRange(returnDateRange).getDisplayValue()) - new Date(startDate)) / (24 * 60 * 60 * 1000)) + 1;
 
   let inventoryOrderIndex = inventoryOrderData.indexOf(data); // row;
 
-  let range = inventoryOrder.getRange(inventoryOrderIndex + 1, (pickupDate + 3), 1, (returnDate - pickupDate + 1));
+  let range = inventoryOrder.getRange(inventoryOrderIndex + 1, (pickupDate + 4), 1, (returnDate - pickupDate + 1));
 
   inventoryOrder.setActiveRange(range)
 
@@ -409,7 +409,7 @@ const goToInventory = () => {
 
 const t = () => {
 
-  Logger.log(getOrderNo())
+  Logger.log(CheckAvailability(1))
 }
 
 

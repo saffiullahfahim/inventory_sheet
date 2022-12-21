@@ -233,8 +233,8 @@ const pickup_or_return_submit = (order, data, type) => {
               previousByColor = "#f00";
             }
           } else {
-            if (previousData.toLowerCase().indexOf("return") >= 0) {
-              previousData = "";
+            if (previousData.toLowerCase().indexOf("return") >= 0 || previousData.toLowerCase().indexOf("b2b") >= 0) {
+              previousData = "NEED WASH";
             }
           }
 

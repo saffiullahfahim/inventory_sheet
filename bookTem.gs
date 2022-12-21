@@ -62,6 +62,16 @@ const popUpTemplateBook = `\`
   <body><div></div></body>
   <script>
     const data = \${orderData};
+    const inventoryOrderData = \${inventoryOrderData};
+
+    const inventoryOrderObj = {};
+
+    inventoryOrderData.forEach((value, index, arr) => {
+      inventoryOrderObj[value[1].trim()] = {
+        price: Number(value[0]),
+        index
+      }
+    })
 
     const startDate = "\${startDate}";
     const html = \\\`\\\\\\\`
@@ -1028,6 +1038,11 @@ const popUpTemplateBook = `\`
     const finalData_ = JSON.parse(\\\`\${finalData_}\\\`);
 
     for (let i = 0; i < finalData.length; i++) {
+      if(inventoryOrderObj[finalData[i][0].trim()] && isNaN(inventoryOrderObj[finalData[i][0].trim()].price) == false){
+        finalData[i][4] = inventoryOrderObj[finalData[i][0].trim()].price;
+      } else{
+        finalData[i][4] = "";
+      }
       itemsRow += \\\`
   <tr style="height: 21px">
     <td
@@ -1229,11 +1244,21 @@ const popUpTemplateBook = `\`
     previouslyPaid.onkeydown = stringDisable;
     previouslyPaid.onkeyup = computeTotal;
 
+    if(eventDiv.innerText.trim().toLowerCase() == "(postage)"){
+      pickupMethod.value = "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)";
+    }
+
+    eventDiv.oninput = () => {
+      if(eventDiv.innerText.trim().toLowerCase() == "(postage)"){
+        pickupMethod.value = "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)";
+      }
+    }
+
     const Finised = ({time: s_time, data, orderNo}) => {
       let itemsData = "";
       let totalStr = [];
       let TotalStr = "";
-      finalData_.forEach((v, i, a) => {
+      data.forEach((v, i, a) => {
         itemsData += v[0];
         if(String(v[1]).trim() != ""){
           itemsData += "<br>" + v[1];
@@ -1341,7 +1366,11 @@ const popUpTemplateBook = `\`
 
     let returnDateValue = returnDate;
     if(returnMethod.value == "Return post back by any courier except poslaju skynet"){
-      returnDateValue = getDate(new Date(returnDateValue).getTime() - 5 * 24 * 60 * 60 * 1000)
+      returnDateValue = getDate(new Date(returnDateValue).getTime() - 5 * 24 * 60 * 60 * 1000);
+    }
+
+    if(pickupMethod.value == "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)"){
+      pickupM2 = "Before postage to bank in another " + pickupM2[0].toLowerCase() + pickupM2.substr(1);
     }
 
     if(eventDiv.innerText.toLowerCase().trim() == "(fitting)"){
@@ -1407,12 +1436,8 @@ const popUpTemplateBook = `\`
       bookBtn.innerHTML = "BOOKING..";
       bookBtn.disabled = true;
 
-      for(let i = 0; i < notesDiv.length; i++){
-        finalData_[i][1] = notesDiv[i].innerText;
-      }
-
-      for(let i = 0; i < pricesDiv.length; i++){
-        finalData_[i][2] = pricesDiv[i].innerText;
+      for(let i = 0; i < finalData_.length; i++){
+        finalData_[i] = [finalData[i][0].trim(), inventoryOrderObj[finalData_[i][0].trim()].index, notesDiv[i].innerText, pricesDiv[i].innerText]
       }
 
       const saleAdvisor = [saleAdvisor1.value, saleAdvisor2.value, saleAdvisor3.value].toString()
