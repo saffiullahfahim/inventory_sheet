@@ -72,6 +72,14 @@ const popUpTemplateBook = `\`
       }
     })
 
+    let totalDepositLists_ = \${totalDepositLists};
+    const totalDepositLists = [];
+    totalDepositLists_.forEach((value) => {
+      if(value[0]){
+        totalDepositLists.push("RM" + value[0]);
+      }
+    })
+
     const inventoryOrderData = \${inventoryOrderData};
 
     const inventoryOrderObj = {};
@@ -1048,10 +1056,12 @@ const popUpTemplateBook = `\`
     const finalData_ = JSON.parse(\\\`\${finalData_}\\\`);
 
     for (let i = 0; i < finalData.length; i++) {
-      if(inventoryOrderObj[finalData[i][0].trim()] && isNaN(inventoryOrderObj[finalData[i][0].trim()].price) == false){
-        finalData[i][4] = inventoryOrderObj[finalData[i][0].trim()].price;
-      } else{
-        finalData[i][4] = "";
+      if(finalData[i][4] == "" || isNaN(finalData[i][4])){
+        if(inventoryOrderObj[finalData[i][0].trim()] && isNaN(inventoryOrderObj[finalData[i][0].trim()].price) == false){
+          finalData[i][4] = inventoryOrderObj[finalData[i][0].trim()].price;
+        } else{
+          finalData[i][4] = "";
+        }
       }
       itemsRow += \\\`
   <tr style="height: 21px">
@@ -1160,7 +1170,7 @@ const popUpTemplateBook = `\`
       saleAdvisor1: selesAdvisorLists,
       saleAdvisor2: ["", ...selesAdvisorLists],
       saleAdvisor3:["", ...selesAdvisorLists],
-      totalDeposit: ["RM300", "RM400", "RM600", "RM800", "RM900", "RM1200"]
+      totalDeposit: totalDepositLists
     }
 
     for(let x in options){

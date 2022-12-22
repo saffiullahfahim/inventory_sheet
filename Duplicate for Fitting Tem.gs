@@ -137,6 +137,14 @@ const popUpTemplateDuplicate_For_Fitting = `\`
       }
     })
 
+    let totalDepositLists_ = \${totalDepositLists};
+    const totalDepositLists = [];
+    totalDepositLists_.forEach((value) => {
+      if(value[0]){
+        totalDepositLists.push("RM" + value[0]);
+      }
+    })
+
     const inventoryOrderData = \${inventoryOrderData};
 
     const inventoryOrderObj = {};
@@ -1447,7 +1455,7 @@ const popUpTemplateDuplicate_For_Fitting = `\`
         saleAdvisor1: selesAdvisorLists,
         saleAdvisor2: ["", ...selesAdvisorLists],
         saleAdvisor3:["", ...selesAdvisorLists],
-        totalDeposit: ["RM300", "RM400", "RM600", "RM800", "RM900", "RM1200"],
+        totalDeposit: totalDepositLists,
       };
   
       for (let x in options) {

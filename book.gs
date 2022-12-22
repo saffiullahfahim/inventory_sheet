@@ -77,7 +77,9 @@ const Book = (order) => {
   finalData_ = JSON.stringify(finalData_);
 
   const templateSheet = ss.getSheetByName("Template");
-  const selesAdvisorLists = JSON.stringify(templateSheet.getRange(`M1:M${templateSheet.getLastRow()}`).getDisplayValues());
+  const templateSheetLastRow = templateSheet.getLastRow();
+  const selesAdvisorLists = JSON.stringify(templateSheet.getRange(`M2:M${templateSheetLastRow}`).getDisplayValues());
+  const totalDepositLists = JSON.stringify(templateSheet.getRange(`H2:H${templateSheetLastRow}`).getDisplayValues());
 
   let htmlOutput = HtmlService
     .createHtmlOutput(eval(popUpTemplateBook))
