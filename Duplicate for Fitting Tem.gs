@@ -127,6 +127,16 @@ const popUpTemplateDuplicate_For_Fitting = `\`
   <body><div></div></body>
   <script>
     const data = JSON.parse(\\\`\${logs}\\\`);
+    let selesAdvisorLists_ = \${selesAdvisorLists};
+
+    const selesAdvisorLists = [];
+
+    selesAdvisorLists_.forEach((value) => {
+      if(value[0]){
+        selesAdvisorLists.push(value[0]);
+      }
+    })
+
     const inventoryOrderData = \${inventoryOrderData};
 
     const inventoryOrderObj = {};
@@ -1434,9 +1444,9 @@ const popUpTemplateDuplicate_For_Fitting = `\`
           "Early Pickup 10AM",
           "Lalamove (Weekday 12PM-8PM Weekend PH 10AM-6PM)",
         ],
-        saleAdvisor1:["Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Lance", "Emily"],
-        saleAdvisor2:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Lance", "Emily"],
-        saleAdvisor3:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Lance", "Emily"],
+        saleAdvisor1: selesAdvisorLists,
+        saleAdvisor2: ["", ...selesAdvisorLists],
+        saleAdvisor3:["", ...selesAdvisorLists],
         totalDeposit: ["RM300", "RM400", "RM600", "RM800", "RM900", "RM1200"],
       };
   

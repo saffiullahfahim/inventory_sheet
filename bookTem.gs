@@ -62,6 +62,16 @@ const popUpTemplateBook = `\`
   <body><div></div></body>
   <script>
     const data = \${orderData};
+
+    let selesAdvisorLists_ = \${selesAdvisorLists};
+    const selesAdvisorLists = [];
+
+    selesAdvisorLists_.forEach((value) => {
+      if(value[0]){
+        selesAdvisorLists.push(value[0]);
+      }
+    })
+
     const inventoryOrderData = \${inventoryOrderData};
 
     const inventoryOrderObj = {};
@@ -1147,9 +1157,9 @@ const popUpTemplateBook = `\`
     const options = {
       pickupMethod: ["Pickup (Weekday 12PM-8PM Weekend PH 10AM-6PM)", "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)", "Early Pickup 10AM", "Lalamove (Weekday 12PM-8PM Weekend PH 10AM-6PM)"],
       returnMethod: ["Return", "Return post back by any courier except poslaju skynet", "Return by Midnight"],
-      saleAdvisor1:["Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Emily"],
-      saleAdvisor2:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Emily"],
-      saleAdvisor3:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Emily"],
+      saleAdvisor1: selesAdvisorLists,
+      saleAdvisor2: ["", ...selesAdvisorLists],
+      saleAdvisor3:["", ...selesAdvisorLists],
       totalDeposit: ["RM300", "RM400", "RM600", "RM800", "RM900", "RM1200"]
     }
 

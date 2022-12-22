@@ -9,6 +9,9 @@ const Duplicate_For_Fitting = (Order, logs) => {
   const startDate = inventoryOrder.getRange("E1").getDisplayValue();
   let inventoryOrderData = JSON.stringify(inventoryOrder.getRange(`C3:D${inventoryOrderLast}`).getValues());
 
+  const templateSheet = ss.getSheetByName("Template");
+  const selesAdvisorLists = JSON.stringify(templateSheet.getRange(`M1:M${templateSheet.getLastRow()}`).getDisplayValues());
+
   let htmlOutput = HtmlService
     .createHtmlOutput(eval(popUpTemplateDuplicate_For_Fitting))
     .setWidth(836)

@@ -129,6 +129,16 @@ const popUpTemplateUpdate = `\`
   <script>
     const data = \${orderData};
 
+    let selesAdvisorLists_ = \${selesAdvisorLists};
+
+    const selesAdvisorLists = [];
+
+    selesAdvisorLists_.forEach((value) => {
+      if(value[0]){
+        selesAdvisorLists.push(value[0]);
+      }
+    })
+
     const inventoryOrderData = \${inventoryOrderData};
 
     const inventoryOrderObj = {};
@@ -1231,7 +1241,7 @@ const popUpTemplateUpdate = `\`
       if(data[i]){
         // let data_ = data[i].split(",");
         // data_[2] = inventoryOrderObj[data_[0].trim()].price;
-        finalData.push(data[i]);
+        finalData.push(data[i].split(","));
       } else{
         finalData.push(["", "", ""])
       }
@@ -1607,9 +1617,9 @@ const popUpTemplateUpdate = `\`
           "Return post back by any courier except poslaju skynet",
           "Return by Midnight",
         ],
-        saleAdvisor1:["Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Emily"],
-        saleAdvisor2:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Emily"],
-        saleAdvisor3:["", "Skyly", "Ada", "Huiqi", "Xiaoqi", "Mico", "Joanna", "Weiling", "Emily"],
+        saleAdvisor1: selesAdvisorLists,
+        saleAdvisor2: ["", ...selesAdvisorLists],
+        saleAdvisor3:["", ...selesAdvisorLists],
         totalDeposit: ["RM300", "RM400", "RM600", "RM800", "RM900", "RM1200"],
       };
   

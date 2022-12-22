@@ -38,6 +38,9 @@ const Update = (orderNo, orderLists) => {
 
   orderData = JSON.stringify(orderData);
 
+  const templateSheet = ss.getSheetByName("Template");
+  const selesAdvisorLists = JSON.stringify(templateSheet.getRange(`M1:M${templateSheet.getLastRow()}`).getDisplayValues());
+  
   let htmlOutput = HtmlService
     .createHtmlOutput(eval(popUpTemplateUpdate))
     .setWidth(836)
