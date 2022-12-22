@@ -1413,7 +1413,7 @@ const popUpTemplateUpdate = `\`
       }
     }
 
-    if(TotalStr == "=RM0<br><br>"){
+    if(TotalStr == "=RM0<br><br>" || TotalStr == "RM0(Previously paid RM)<br><br>"){
       TotalStr = "<br>";
     }
     
@@ -1432,7 +1432,10 @@ const popUpTemplateUpdate = `\`
     }
 
     if(pickupMethod.value == "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)"){
-      pickupM2 = "Before postage to bank in another " + pickupM2[0].toLowerCase() + pickupM2.substr(1);
+      if(totalDepositDropDown.value == "Pay Now"){
+        pickupM2 = \\\`Refundable deposit \\\${totalDeposit.value} paid \\\${depositPlasText}\\\`;
+      }
+      else pickupM2 = \\\`Before postage to bank in another refundable deposit \\\${totalDeposit.value} \\\${depositPlasText}\\\`;
     }
 
       if(eventDiv.innerText.toLowerCase().trim() == "(fitting)"){
