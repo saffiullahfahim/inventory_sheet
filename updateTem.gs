@@ -1343,7 +1343,7 @@ const popUpTemplateUpdate = `\`
       if(String(v[1]).trim() != ""){
         itemsData += "<br>" + v[1];
       }
-      if(String(v[2]).trim() != "" && eventDiv.innerText.toLowerCase().trim() != "(fitting)"){
+      if(String(v[2]).trim() != "" && Number(String(v[2]).trim()) != 0 && eventDiv.innerText.toLowerCase().trim() != "(fitting)"){
          if(totalDropDown.value == "Pay Later" && totalStr.length == 0 && a.length - 1 == i && Number(String(v[2]).trim()) != 0 && Number(others.innerText) == 0){
             itemsData += "<br>Balance RM" + String(v[2]).trim();
           }
@@ -1423,9 +1423,11 @@ const popUpTemplateUpdate = `\`
       }
     }
 
-    if(TotalStr == "=RM0<br><br>" || TotalStr == "RM0(Previously paid RM)<br><br>"){
+    if(TotalStr == "=RM0<br><br>"){
       TotalStr = "<br>";
     }
+
+    console.log(totalStr, TotalStr, "123456")
     
     let saleAdvisor = saleAdvisor1.value;
     if(saleAdvisor2.value){
