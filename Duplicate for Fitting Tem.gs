@@ -1147,9 +1147,9 @@ const popUpTemplateDuplicate_For_Fitting = `\`
     }
 
     for (let i = 0; i < finalData.length; i++) {
-      if(finalData[i][0].trim() && inventoryOrderObj[finalData[i][0].trim()] && isNaN(inventoryOrderObj[finalData[i][0].trim()].price) == false){
-        finalData[i][2] = inventoryOrderObj[finalData[i][0].trim()].price;
-      }
+      // if(finalData[i][0].trim() && inventoryOrderObj[finalData[i][0].trim()] && isNaN(inventoryOrderObj[finalData[i][0].trim()].price) == false){
+      //   finalData[i][2] = inventoryOrderObj[finalData[i][0].trim()].price;
+      // }
       itemsRow += \\\`
   <tr style="height: 21px">
     <td
@@ -1475,12 +1475,12 @@ const popUpTemplateDuplicate_For_Fitting = `\`
       for (let i = 0; i < dataInputs.length; i++)  {
         let input = dataInputs[i];
         input.oninput = editEnable;
-        input.onchange = () => {
-          if(inventoryOrderObj[input.value.trim()] && isNaN(inventoryOrderObj[input.value.trim()].price) == false){
-            pricesDiv[i].innerText = inventoryOrderObj[input.value.trim()].price;
-          }
-          editEnable();
-        };
+        // input.onchange = () => {
+        //   if(inventoryOrderObj[input.value.trim()] && isNaN(inventoryOrderObj[input.value.trim()].price) == false){
+        //     pricesDiv[i].innerText = inventoryOrderObj[input.value.trim()].price;
+        //   }
+        //   editEnable();
+        // };
         input.focus = () => {
           input.select();
           input.setSelectionRange(0, input.value.length);

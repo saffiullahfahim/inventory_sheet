@@ -174,7 +174,7 @@ const addBook = (orderNo, pickupDate_, eventDate_, returnDate_, logs, finalData_
   const finalData__ = [];
 
   finalData_.forEach((v, i) => {
-    const orderNo_ = "[" + logs[0] + "]  " + v[1] + " "  + orderNo;
+    const orderNo_ = "[" + logs[0] + "]  " + v[2] + " "  + orderNo;
     const orderNo_2 = "[" + logs[0] + "] " + orderNo;
     const {
       color_fill: color,

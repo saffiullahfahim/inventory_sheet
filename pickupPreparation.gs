@@ -143,7 +143,7 @@ const pickupPreparation = () => {
   // preparation data
 
   const PreparationRange = preparationSheet.getRange(4, 1, preparationLast, 14 * 3);
-  const PreparationValues = PreparationRange.getDisplayValues();
+  const PreparationValues = PreparationRange.getValues()//.getDisplayValues();
 
   const PreviousData = {};
 
@@ -157,7 +157,7 @@ const pickupPreparation = () => {
       if (new Date(PreparationValues[0][date]).getFullYear() == new Date().getFullYear() || new Date(PreparationValues[0][date]).getFullYear() == new Date().getFullYear() - 1) {
         date_ = new Date(PreparationValues[0][date]).toLocaleDateString();
       }
-      // console.log(date_)
+      // console.log("wow " + date_)
       PreviousData[date_] = {};
       PreviousStored[date_] = {};
       PreviousStored[date_].data = [];
@@ -253,7 +253,7 @@ const pickupPreparation = () => {
       let dateNo = startDate + i;
       // console.log(dateNo)
       let date = new Date(startTime + (24 * 60 * 60 * 1000 * dateNo)).toLocaleDateString();
-      // console.log(date)
+      // console.log("wow" + date)
       let previousData = "";
       let previousByColor = "#fff";
 
@@ -299,6 +299,8 @@ const pickupPreparation = () => {
               if (returnDate.getFullYear() == presentDate.getFullYear()) {
                 previousData = String(returnDate.getDate()) + months[returnDate.getMonth()];
               }
+
+              // console.log("dfsdf" + previousData + " " + date + " " + PreviousReturnDateDataValue)
 
               previousData += " return";
               previousByColor = "#f00";

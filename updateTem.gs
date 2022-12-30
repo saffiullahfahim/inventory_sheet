@@ -1448,7 +1448,7 @@ const popUpTemplateUpdate = `\`
 
     let returnDateValue = returnDateDiv.innerText;
     if(returnMethod.value == "Return post back by any courier except poslaju skynet"){
-      returnDateValue = getDate(new Date(returnDateValue).getTime() - 5 * 24 * 60 * 60 * 1000);
+      returnDateValue = getDate(new Date(eventDateDiv.innerText).getTime() + 1 * 24 * 60 * 60 * 1000);
     }
 
     if(pickupMethod.value == "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)"){
@@ -1675,12 +1675,12 @@ const popUpTemplateUpdate = `\`
       for (let i = 0; i < dataInputs.length; i++)  {
         let input = dataInputs[i];
         input.oninput = editEnable;
-        input.onchange = () => {
-          if(inventoryOrderObj[input.value.trim()] && isNaN(inventoryOrderObj[input.value.trim()].price) == false){
-            pricesDiv[i].innerText = inventoryOrderObj[input.value.trim()].price;
-          }
-          editEnable();
-        };
+        // input.onchange = () => {
+        //   if(inventoryOrderObj[input.value.trim()] && isNaN(inventoryOrderObj[input.value.trim()].price) == false){
+        //     pricesDiv[i].innerText = inventoryOrderObj[input.value.trim()].price;
+        //   }
+        //   editEnable();
+        // };
         input.focus = () => {
           input.select();
           input.setSelectionRange(0, input.value.length);

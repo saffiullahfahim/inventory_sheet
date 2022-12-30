@@ -3,7 +3,7 @@ const getPreparationData = (type) => {
   const preparationSheet = ss.getSheetByName("Pickup preparation");
   let preparationLast = preparationSheet.getLastRow();
   const PreparationRange = preparationSheet.getRange(4, 1, preparationLast, 14 * 3);
-  const PreparationValues = PreparationRange.getDisplayValues();
+  const PreparationValues = PreparationRange.getValues();
 
   const PreparationData = {
     pickup: {
@@ -110,7 +110,7 @@ const pickup_or_return_submit = (order, data, type) => {
   const preparationSheet = ss.getSheetByName("Pickup preparation");
   let preparationLast = preparationSheet.getLastRow();
   const PreparationRange = preparationSheet.getRange(4, 1, preparationLast, 14 * 3);
-  const PreparationValues = PreparationRange.getDisplayValues();
+  const PreparationValues = PreparationRange.getValues();
   let rowStart = 0;
   let columnStart = 0;
   let rowStart_ = 0;

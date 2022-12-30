@@ -1056,13 +1056,13 @@ const popUpTemplateBook = `\`
     const finalData_ = JSON.parse(\\\`\${finalData_}\\\`);
 
     for (let i = 0; i < finalData.length; i++) {
-      if(finalData[i][4] == "" || isNaN(finalData[i][4])){
-        if(inventoryOrderObj[finalData[i][0].trim()] && isNaN(inventoryOrderObj[finalData[i][0].trim()].price) == false){
-          finalData[i][4] = inventoryOrderObj[finalData[i][0].trim()].price;
-        } else{
-          finalData[i][4] = "";
-        }
-      }
+      // if(finalData[i][4] == "" || isNaN(finalData[i][4])){
+      //   if(inventoryOrderObj[finalData[i][0].trim()] && isNaN(inventoryOrderObj[finalData[i][0].trim()].price) == false){
+      //     finalData[i][4] = inventoryOrderObj[finalData[i][0].trim()].price;
+      //   } else{
+      //     finalData[i][4] = "";
+      //   }
+      // }
       itemsRow += \\\`
   <tr style="height: 21px">
     <td
@@ -1386,7 +1386,7 @@ const popUpTemplateBook = `\`
 
     let returnDateValue = returnDate;
     if(returnMethod.value == "Return post back by any courier except poslaju skynet"){
-      returnDateValue = getDate(new Date(returnDateValue).getTime() - 5 * 24 * 60 * 60 * 1000);
+      returnDateValue = getDate(new Date(eventDate).getTime() + 1 * 24 * 60 * 60 * 1000);
     }
 
     if(pickupMethod.value == "Post out (Weekday 12PM-8PM Weekend PH 10AM-6PM)"){
