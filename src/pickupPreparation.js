@@ -128,9 +128,13 @@ const pickupPreparation = () => {
   const startDate$ = inventoryOrder.getRange("E1").getDisplayValue();
   const now = new Date().toLocaleDateString();
 
-  const preWithNow = new Date(new Date().getTime() - (3 * 24 * 60 * 60 * 1000)).toLocaleDateString();
+  const preWithNow = new Date(new Date().getTime() - (30 * 24 * 60 * 60 * 1000)).toLocaleDateString();
 
   let startDate = (new Date(preWithNow) - new Date(startDate$)) / (24 * 60 * 60 * 1000);
+
+  if(startDate <= 4){
+    startDate = 5;
+  }
 
   // rule
   let range = ss.getSheetByName("Template").getRange(`J2:J11`);
@@ -138,7 +142,7 @@ const pickupPreparation = () => {
 
 
   // inventory data
-  const Data = inventoryOrder.getRange(3, 4, inventoryOrderLast - 2, 31 + startDate + 1).getDisplayValues();
+  const Data = inventoryOrder.getRange(3, 4, inventoryOrderLast - 2, inventoryOrder.getLastColumn() - 4).getDisplayValues();
 
   // preparation data
 
@@ -248,16 +252,17 @@ const pickupPreparation = () => {
     date: []
   };
 
-  Data.forEach((v, i) => {
-    for (let i = 0; i < 17; i++) {
-      let dateNo = startDate + i;
-      // console.log(dateNo)
-      let date = new Date(startTime + (24 * 60 * 60 * 1000 * dateNo)).toLocaleDateString();
-      // console.log("wow" + date)
-      let previousData = "";
-      let previousByColor = "#fff";
+  let totalDate = 0;
+  let totalData = 0;
 
-      // if(now == date) console.log(PreviousData[date])
+  const getDataForEach = () => {
+    let dateNo = startDate + totalData;
+    // console.log(dateNo)
+    let date = new Date(startTime + (24 * 60 * 60 * 1000 * dateNo)).toLocaleDateString();
+    let previousData = "";
+    let previousByColor = "#fff";
+
+    Data.forEach((v) => {
       if (PreviousData[String(v[0]).trim() + GetOrderNO(String(v[dateNo + 1]).trim())]) {
         // console.log(String(v[0]).trim())
         previousData = PreviousData[String(v[0]).trim() + GetOrderNO(String(v[dateNo + 1]).trim())];
@@ -358,6 +363,11 @@ const pickupPreparation = () => {
           DateWise.wrap[date].return.push([true, true, false]);
           DateWise.align[date].return.push(["middle", "middle", "middle"])
           DateWise.font[date].return.push(["bold", "bold", "bold"]);
+
+          if (String(v[dateNo + 2]).trim().toLowerCase() != "returned") {
+            if (PreviousReturnDate[String(v[0]).trim()]) PreviousReturnDate[String(v[0]).trim()].push(date);
+            else PreviousReturnDate[String(v[0]).trim()] = [date];
+          }
         } else if (v[dateNo + 1].indexOf("#") >= 0 && isNaN(GetOrderNoOnly(v[dateNo + 1])) == false) {
           // console.log(date + " " +String(v[dateNo + 1]).trim().toLowerCase())
           DateWise.data[date].pickup.push([String(v[0]).trim(), String(v[dateNo + 1]).trim(), previousData]);
@@ -370,58 +380,20 @@ const pickupPreparation = () => {
           DateWise.align[date].pickup.push(["middle", "middle", "middle"])
           DateWise.font[date].pickup.push(["bold", "bold", "bold"]);
         }
-      } else {
-        DateWise.data[date].pickup = [["", "", ""]];
-        DateWise.color[date].pickup = [["#ffffff", "#ffffff", "#ffffff"]];
-        DateWise.rule[date].pickup = [[rule]];
-        DateWise.wrap[date].pickup = [[true, true, false]];
-        DateWise.align[date].pickup = [["middle", "middle", "middle"]]
-        DateWise.font[date].pickup = [["bold", "bold", "bold"]];
       }
 
-      // if (dateNo >= 0 && DateWise.data[date]) {
-      //   if (v[dateNo + 1].indexOf("-") >= 0) {
-      //     DateWise.data[date].push([String(v[0]).trim(), String(v[dateNo + 1]).trim(), previousData]);
-      //     DateWise.color[date].push(["#ffffff", "#ffffff", "#ffffff"]);
-      //     DateWise.rule[date].push([rule]);
-      //     DateWise.wrap[date].push([true, true, false]);
-      //     DateWise.align[date].push(["middle", "middle", "middle"])
-      //     DateWise.font[date].push(["normal", "normal", "normal"]);
-      //   } else if (v[dateNo + 1].indexOf("#") >= 0) {
-      //     DateWise.data[date].push([String(v[0]).trim(), String(v[dateNo + 1]).trim(), previousData]);
-      //     DateWise.color[date].push(["#6aa84f", "#6aa84f", "#6aa84f"]);
-      //     DateWise.rule[date].push([rule]);
-      //     DateWise.wrap[date].push([true, true, false]);
-      //     DateWise.align[date].push(["middle", "middle", "middle"])
-      //     DateWise.font[date].push(["normal", "normal", "normal"]);
-      //   }
-      // } else if (dateNo >= 0) {
-      //   if (v[dateNo + 1].indexOf("-") >= 0) {
-      //     DateWise.data[date] = [[String(v[0]).trim(), String(v[dateNo + 1]).trim(), previousData]];
-      //     DateWise.color[date] = [["#ffffff", "#ffffff", "#ffffff"]];
-      //     DateWise.rule[date] = [[rule]];
-      //     DateWise.wrap[date] = [[true, true, false]];
-      //     DateWise.align[date] = [["middle", "middle", "middle"]]
-      //     DateWise.font[date] = [["normal", "normal", "normal"]];
-      //   } else if (v[dateNo + 1].indexOf("#") >= 0) {
-      //     DateWise.data[date] = [[String(v[0]).trim(), String(v[dateNo + 1]).trim(), previousData]];
-      //     DateWise.color[date] = [["#6aa84f", "#6aa84f", "#6aa84f"]];
-      //     DateWise.rule[date] = [[rule]];
-      //     DateWise.wrap[date] = [[true, true, false]];
-      //     DateWise.align[date] = [["middle", "middle", "middle"]]
-      //     DateWise.font[date] = [["normal", "normal", "normal"]];
-      //   }
-      // } else {
-      //   DateWise.data[date] = [["", "", ""]];
-      //   DateWise.color[date] = [["#ffffff", "#ffffff", "#ffffff"]];
-      //   DateWise.rule[date] = [[rule]];
-      //   DateWise.wrap[date] = [[true, true, false]];
-      //   DateWise.align[date] = [["middle", "middle", "middle"]]
-      //   DateWise.font[date] = [["normal", "normal", "normal"]];
-      // }
-      if (DateWise.date.indexOf(date) == -1) DateWise.date.push(date)
+    });
+
+    if (DateWise.date.indexOf(date) == -1 && (DateWise.data[date].pickup.length || DateWise.data[date].return.length)) {
+      DateWise.date.push(date);
+      totalDate++;
     }
-  });
+    totalData++;
+  }
+
+  while(totalDate < 17 && totalData < Data[0].length){
+    getDataForEach()
+  }
 
   // PreparationRange.clearFormat();
   preparationSheet.getRange(3, 1, 4000, 14 * 3).setBorder(false, false, false, false, false, false).setBackground("white").clearDataValidations().clear({ contentsOnly: true })
@@ -488,16 +460,21 @@ const pickupPreparation = () => {
       continue;
     }
     if (date == now) {
-      for (let preDate = 1; preDate <= 3; preDate++) {
+      let preDate = 1;
+      let preDateCount = 1;
+
+      while(preDateCount <= 3){
         let previous = new Date(new Date(date).getTime() - (preDate * 24 * 60 * 60 * 1000)).toLocaleDateString();
-        if (PreviousStored[previous]) {
+        if (PreviousStored[previous] && PreviousStored[previous].data.length > 1) {
           dateWiseData = [...dateWiseData, ...blankFourRow, ...PreviousStored[previous].data];
           dateWiseColor = [...dateWiseColor, ...blankFourRow, ...PreviousStored[previous].color];
           dateWiseRule = [...dateWiseRule, [rule], ...blankFourRule, ...PreviousStored[previous].rule];
           dateWiseWrap = [...dateWiseWrap, ...blankFourWrap, ...PreviousStored[previous].wrap];
           dateWiseAlign = [...dateWiseAlign, ...blankFourAlign, ...PreviousStored[previous].align];
           dateWiseFont = [...dateWiseFont, ...blankFourFont, ...PreviousStored[previous].font];
+          preDateCount++;
         }
+        preDate++;
       }
     }
 
