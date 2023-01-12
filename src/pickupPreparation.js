@@ -274,7 +274,7 @@ const pickupPreparation = () => {
         // console.log(String(v[0]).trim() + GetOrderNO(String(v[dateNo + 1]).trim()) + " " + previousData);
       }
 
-      if (GetOrderNO(String(v[dateNo + 1]).trim())[0] != "-" && (previousData == "" || previousData.toLowerCase().indexOf("return") >= 0 || previousData.toLowerCase().indexOf("b2b") >= 0)) {
+      if (GetOrderNO(String(v[dateNo + 1]).trim())[0] != "-") {
         if(previousData.toLowerCase().indexOf("return") >= 0){
           let presentDate = new Date(previousData.toLowerCase().replace("return", "").trim() + new Date().getFullYear()).toLocaleDateString();
           if (new Date(previousData.toLowerCase().replace("return", "").trim()).getFullYear() == new Date().getFullYear() || new Date(previousData.toLowerCase().replace("return", "").trim()).getFullYear() == new Date().getFullYear() - 1) {
@@ -298,6 +298,9 @@ const pickupPreparation = () => {
           const PreviousReturnDateData = PreviousReturnDate[String(v[0]).trim()];
           let presentDate = new Date(date);
           for (let PreviousReturnDateDataValue of PreviousReturnDateData) {
+            if(PreviousData[PreviousReturnDateDataValue] == undefined){
+              continue;
+            }
             let returnDate = new Date(PreviousReturnDateDataValue);
             let months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
 
