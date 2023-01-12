@@ -142,7 +142,12 @@ const pickupPreparation = () => {
 
 
   // inventory data
-  const Data = inventoryOrder.getRange(3, 4, inventoryOrderLast - 2, inventoryOrder.getLastColumn() - 4).getDisplayValues();
+  let length = startDate + 100;
+  const inventoryOrderLastCol = inventoryOrder.getLastColumn();
+  if(inventoryOrderLastCol - 4 >= length){
+    length = inventoryOrderLastCol - 4;
+  }
+  const Data = inventoryOrder.getRange(3, 4, inventoryOrderLast - 2, length).getDisplayValues();
 
   // preparation data
 
@@ -257,12 +262,12 @@ const pickupPreparation = () => {
 
   const getDataForEach = () => {
     let dateNo = startDate + totalData;
-    // console.log(dateNo)
     let date = new Date(startTime + (24 * 60 * 60 * 1000 * dateNo)).toLocaleDateString();
-    let previousData = "";
-    let previousByColor = "#fff";
 
     Data.forEach((v) => {
+      let previousData = "";
+      let previousByColor = "#fff";
+    
       if (PreviousData[String(v[0]).trim() + GetOrderNO(String(v[dateNo + 1]).trim())]) {
         // console.log(String(v[0]).trim())
         previousData = PreviousData[String(v[0]).trim() + GetOrderNO(String(v[dateNo + 1]).trim())];
@@ -275,7 +280,7 @@ const pickupPreparation = () => {
           if (new Date(previousData.toLowerCase().replace("return", "").trim()).getFullYear() == new Date().getFullYear() || new Date(previousData.toLowerCase().replace("return", "").trim()).getFullYear() == new Date().getFullYear() - 1) {
             presentDate = new Date(previousData.toLowerCase().replace("return", "").trim()).toLocaleDateString();
           }
-          let previousDate = new Date(new Date(now).getTime() - (3 * 24 * 60 * 60 * 1000)).toLocaleDateString();
+          let previousDate = new Date(new Date(now).getTime() - (30 * 24 * 60 * 60 * 1000)).toLocaleDateString();
           if(new Date(presentDate) <= new Date(previousDate)){
             previousByColor = "#f00";
           } else {
@@ -364,10 +369,9 @@ const pickupPreparation = () => {
           DateWise.align[date].return.push(["middle", "middle", "middle"])
           DateWise.font[date].return.push(["bold", "bold", "bold"]);
 
-          if (String(v[dateNo + 2]).trim().toLowerCase() != "returned") {
-            if (PreviousReturnDate[String(v[0]).trim()]) PreviousReturnDate[String(v[0]).trim()].push(date);
-            else PreviousReturnDate[String(v[0]).trim()] = [date];
-          }
+          if (PreviousReturnDate[String(v[0]).trim()]) PreviousReturnDate[String(v[0]).trim()].push(date);
+          else PreviousReturnDate[String(v[0]).trim()] = [date];
+
         } else if (v[dateNo + 1].indexOf("#") >= 0 && isNaN(GetOrderNoOnly(v[dateNo + 1])) == false) {
           // console.log(date + " " +String(v[dateNo + 1]).trim().toLowerCase())
           DateWise.data[date].pickup.push([String(v[0]).trim(), String(v[dateNo + 1]).trim(), previousData]);
@@ -386,12 +390,12 @@ const pickupPreparation = () => {
 
     if (DateWise.date.indexOf(date) == -1 && (DateWise.data[date].pickup.length || DateWise.data[date].return.length)) {
       DateWise.date.push(date);
-      totalDate++;
+      if(new Date(date).getTime() >= new Date(now).getTime()) totalDate++;
     }
     totalData++;
   }
 
-  while(totalDate < 17 && totalData < Data[0].length){
+  while(totalDate < 14 && (totalData + startDate) < Data[0].length - 1){
     getDataForEach()
   }
 
