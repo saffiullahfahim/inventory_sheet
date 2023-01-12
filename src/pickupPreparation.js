@@ -298,7 +298,7 @@ const pickupPreparation = () => {
           const PreviousReturnDateData = PreviousReturnDate[String(v[0]).trim()];
           let presentDate = new Date(date);
           for (let PreviousReturnDateDataValue of PreviousReturnDateData) {
-            if(PreviousData[PreviousReturnDateDataValue] == undefined){
+            if(PreviousStored[PreviousReturnDateDataValue] == undefined){
               continue;
             }
             let returnDate = new Date(PreviousReturnDateDataValue);
