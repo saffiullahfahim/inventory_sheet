@@ -122,6 +122,9 @@ const pickup_or_return_submit = (order, data, type) => {
 
   const PreviousReturnDate = {};
 
+  let data0Load = false;
+  let data1Load = false;
+
   if (PreparationValues[0][0] != "") {
     for (let date = 0; date < PreparationValues[0].length; date += 3) {
       let date_ = new Date(PreparationValues[0][date] + new Date().getFullYear()).toLocaleDateString();
@@ -147,7 +150,20 @@ const pickup_or_return_submit = (order, data, type) => {
             blankTime++;
             continue;
           } else {
-            break;
+            if(data0Load && data1Load) break;
+            else{
+              date = 0;
+              i = 1;
+              blankTime = 0;
+              blankTimeDate = 1;
+              if(data1Load){
+                data0Load = true;
+                continue;
+              } else{
+                data1Load = true;
+                continue;
+              }
+            }
           }
         }
 
@@ -167,10 +183,12 @@ const pickup_or_return_submit = (order, data, type) => {
           console.log(PreparationValues[i][date].trim() + " " + data[PreparationValues[i][date].trim()])
           if (data[PreparationValues[i][date].trim()] == "Yes") PreparationValues[i][date + 2] = "returned";
           else if (String(PreparationValues[i][date + 2]).trim().toLowerCase() == "returned") PreparationValues[i][date + 2] = "";
-          if (rowStart == 0) rowStart = i + 4;
-          if (columnStart == 0) columnStart = date + 1;
-          finalData.push([PreparationValues[i][date], PreparationValues[i][date + 1], PreparationValues[i][date + 2]]);
-
+          console.log(data1Load + " " + data0Load)
+          if(data0Load && data1Load) {
+            if (rowStart == 0) rowStart = i + 4;
+            if (columnStart == 0) columnStart = date + 1;
+            finalData.push([PreparationValues[i][date], PreparationValues[i][date + 1], PreparationValues[i][date + 2]]);
+          }
         } else if (String(PreparationValues[i][date + 1]).trim().indexOf("#") >= 0 && GetOrderNO(String(PreparationValues[i][date + 1]).trim())[0] != "-" && isNaN(GetOrderNoOnly(PreparationValues[i][date + 1])) == false && type == "pickup" && GetOrderNoOnly(PreparationValues[i][date + 1]) == order) {
           let color = "#eaeb07";
           if (data[PreparationValues[i][date]] == "Yes") PreparationValues[i][date + 2] = "pickup ady";
@@ -204,10 +222,12 @@ const pickup_or_return_submit = (order, data, type) => {
             color = previousByColor;
           }
 
-          if (rowStart == 0) rowStart = i + 4;
-          if (columnStart == 0) columnStart = date + 1;
-          finalData.push([PreparationValues[i][date], PreparationValues[i][date + 1], PreparationValues[i][date + 2]]);
-          finalColor.push([color]);
+          if(data0Load && data1Load) {
+            if (rowStart == 0) rowStart = i + 4;
+            if (columnStart == 0) columnStart = date + 1;
+            finalData.push([PreparationValues[i][date], PreparationValues[i][date + 1], PreparationValues[i][date + 2]]);
+            finalColor.push([color]);
+          }
         }
 
 
@@ -257,14 +277,15 @@ const pickup_or_return_submit = (order, data, type) => {
     }
   }
 
+  console.log(finalData_)
+  console.log(rowStart + " " +  columnStart + " " + finalData.length)
+
   const range = preparationSheet.getRange(rowStart, columnStart, finalData.length, 3);
   range.setValues(finalData);
 
   if(type == "pickup"){
     preparationSheet.getRange(rowStart, columnStart + 2, finalColor.length, 1).setBackgrounds(finalColor);
   }
-
-  console.log(finalData_)
 
   for (let i_ = 0; i_ < finalData_.data.length; i_++) {
     const cell = preparationSheet.getRange(finalData_.cell[i_].row, finalData_.cell[i_].column);
@@ -298,7 +319,7 @@ const pickup_or_return_submit = (order, data, type) => {
 
 
 const test0000 = () => {
-  Logger.log(pickup_or_return_submit(1003009,{"S Brunnera Trickled Beads OS Ruffle Gown":"Yes","Black Swan ruffled hi low gown":"Yes","CD Angela Puffy Sleeves White ":"Yes","Estella Glitter Off Shoulder Bridal Ballgown":"Yes","Tarik Ediz Coralie Pink":"Yes"},"return"))
+  Logger.log(pickup_or_return_submit(1003028,{"Red kua 有凤来仪 top (XL)":"Yes"},"return"))
 }
 
 
