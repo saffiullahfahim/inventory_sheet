@@ -372,8 +372,10 @@ const pickupPreparation = () => {
           DateWise.align[date].return.push(["middle", "middle", "middle"])
           DateWise.font[date].return.push(["bold", "bold", "bold"]);
 
-          if (PreviousReturnDate[String(v[0]).trim()]) PreviousReturnDate[String(v[0]).trim()].push(date);
-          else PreviousReturnDate[String(v[0]).trim()] = [date];
+          if(previousData.trim().toLowerCase() != "returned"){
+            if (PreviousReturnDate[String(v[0]).trim()]) PreviousReturnDate[String(v[0]).trim()].push(date);
+            else PreviousReturnDate[String(v[0]).trim()] = [date];
+          }
 
         } else if (v[dateNo + 1].indexOf("#") >= 0 && isNaN(GetOrderNoOnly(v[dateNo + 1])) == false) {
           // console.log(date + " " +String(v[dateNo + 1]).trim().toLowerCase())
